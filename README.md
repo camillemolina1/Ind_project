@@ -1,8 +1,14 @@
 # Multi-agent Cooperation Project
 
-Ideas:
-https://docs.google.com/document/d/1nBtNFHgYnrToxPOcQ6x3Shqqf6W_vNYQRMbkd0Sbzg8/edit
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/02b0d9ae-38c3-42d7-97ac-6cbb86173d20)
 
+
+## How to start
+
++ Activate python environment
++ Download mesa (if needed)
++ Run server.py
++ A new window should appear at localhost:8521 with visuals
 
 ## Previous Papers
 

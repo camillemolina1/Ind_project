@@ -5,8 +5,9 @@ from typing import Union
 
 class MoneyModel(mesa.Model):
     """A model with some number of agents."""
-    def __init__(self, N, width, height):
+    def __init__(self, N, F,  width, height):
         self.num_agents = N
+        self.amount_of_food = F
         self.grid = mesa.space.MultiGrid(width, height, True)
         self.schedule = mesa.time.RandomActivation(self)
         self._steps: int = 0
@@ -22,7 +23,7 @@ class MoneyModel(mesa.Model):
             y = self.random.randrange(self.grid.height)
             self.grid.place_agent(a, (x, y))
 
-        for j in range(2):
+        for j in range(self.amount_of_food):
             b = Food(j, self)
             self.schedule.add(b)
             # Add the agent to a random grid cell

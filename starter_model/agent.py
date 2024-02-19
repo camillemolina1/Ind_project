@@ -26,7 +26,11 @@ class MoneyAgent(mesa.Agent):
             self.take_food()
 
     def take_food(self):
-        cellmates = self.model.grid.get_cell_list_contents([self.pos])
+        neighborhood = self.model.grid.get_neighborhood(
+            self.pos, moore=True, include_center=False
+        )
+        print(neighborhood)
+        cellmates = self.model.grid.get_cell_list_contents(neighborhood)
         for c in cellmates:
             if c.food > 0:
                 c.food -= 1

@@ -23,7 +23,7 @@ class MoneyModel(mesa.Model):
             y = self.random.randrange(self.grid.height)
             self.grid.place_agent(a, (x, y))
 
-        for j in range(self.amount_of_food):
+        for j in range(self.num_agents, self.amount_of_food + self.num_agents):
             b = Food(j, self)
             self.schedule.add(b)
             # Add the agent to a random grid cell

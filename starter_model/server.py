@@ -1,9 +1,5 @@
 import mesa
-
-from agent import MoneyAgent
 from model import MoneyModel
-from mesa.visualization.UserParam import Slider
-
 
 FOOD = 0
 AGENT = 1
@@ -42,6 +38,15 @@ def agent_portrayal(agent):
             portrayal["Layer"] = 0
     else:
         portrayal = {"Shape": "circle", "Color": "red", "Filled": "true", "Layer": 1, "r": 0.2}
+        if agent.food == 2:
+            portrayal["r"] = "0.2"
+            portrayal["Color"] = "red"
+        if agent.food == 1:
+            portrayal["r"] = "0.1"
+            portrayal["Color"] = "red"
+        if agent.food == 0:
+            portrayal["Color"] = "grey"
+            portrayal["r"] = "0.1"
     return portrayal
 
 

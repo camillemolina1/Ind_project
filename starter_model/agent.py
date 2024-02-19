@@ -9,6 +9,7 @@ class Food(mesa.Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
         self.type = FOOD
+        self.food = 10
 
 
 class MoneyAgent(mesa.Agent):
@@ -17,19 +18,19 @@ class MoneyAgent(mesa.Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
         self.type = AGENT
-        self.wealth = 1
+        self.food = 0
 
     def step(self):
         self.move()
-        if self.wealth > 0:
-            self.give_money()
+        if self.food == 0:
+            self.take_food()
 
-    def give_money(self):
+    def take_food(self):
         cellmates = self.model.grid.get_cell_list_contents([self.pos])
-        if len(cellmates) > 1:
-            other_agent = self.random.choice(cellmates)
-            other_agent.wealth += 1
-            self.wealth -= 1
+        for c in cellmates:
+            if c.food > 0:
+                c.food -= 1
+                self.food += 1
 
     def move(self):
         possible_steps = self.model.grid.get_neighborhood(

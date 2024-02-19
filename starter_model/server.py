@@ -12,7 +12,7 @@ AGENT = 1
 def agent_portrayal(agent):
     if agent.type == AGENT:
         portrayal = {"Shape": "circle", "Color": "green", "Filled": "true", "Layer": 0, "r": 0.5}
-        if agent.wealth > 0:
+        if agent.food > 0:
             portrayal["Color"] = "green"
             portrayal["Layer"] = 0
         else:

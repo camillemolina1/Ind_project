@@ -1,11 +1,22 @@
 import mesa
 
 
+FOOD = 0
+AGENT = 1
+
+
+class Food(mesa.Agent):
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
+        self.type = FOOD
+
+
 class MoneyAgent(mesa.Agent):
     """An agent with fixed initial wealth."""
 
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
+        self.type = AGENT
         self.wealth = 1
 
     def step(self):

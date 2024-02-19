@@ -1,4 +1,4 @@
-from agent import MoneyAgent
+from agent import MoneyAgent, Food
 import mesa
 from typing import Union
 
@@ -21,6 +21,14 @@ class MoneyModel(mesa.Model):
             x = self.random.randrange(self.grid.width)
             y = self.random.randrange(self.grid.height)
             self.grid.place_agent(a, (x, y))
+
+        for j in range(2):
+            b = Food(j, self)
+            self.schedule.add(b)
+            # Add the agent to a random grid cell
+            x = self.random.randrange(self.grid.width)
+            y = self.random.randrange(self.grid.height)
+            self.grid.place_agent(b, (x, y))
 
     def step(self):
         self.schedule.step()

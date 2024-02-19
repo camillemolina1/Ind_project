@@ -9,7 +9,7 @@ class Food(mesa.Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
         self.type = FOOD
-        self.food = 10
+        self.food = 2
 
 
 class MoneyAgent(mesa.Agent):
@@ -29,7 +29,6 @@ class MoneyAgent(mesa.Agent):
         neighborhood = self.model.grid.get_neighborhood(
             self.pos, moore=True, include_center=False
         )
-        print(neighborhood)
         cellmates = self.model.grid.get_cell_list_contents(neighborhood)
         for c in cellmates:
             if c.food > 0:

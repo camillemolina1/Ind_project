@@ -1,6 +1,5 @@
 from agent import HungryAgent, Food
 import mesa
-from typing import Union
 
 
 class MoneyModel(mesa.Model):
@@ -25,7 +24,7 @@ class MoneyModel(mesa.Model):
 
         for j in range(self.num_agents, self.amount_of_food + self.num_agents):
             b = Food(j, self)
-            self.schedule.add(b)
+            # self.schedule.add(b)
             # Add the agent to a random grid cell
             x = self.random.randrange(self.grid.width)
             y = self.random.randrange(self.grid.height)

@@ -1,6 +1,5 @@
 import mesa
 
-
 FOOD = 0
 AGENT = 1
 
@@ -12,8 +11,7 @@ class Food(mesa.Agent):
         self.food = 2
 
 
-class MoneyAgent(mesa.Agent):
-    """An agent with fixed initial wealth."""
+class HungryAgent(mesa.Agent):
 
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
@@ -23,21 +21,20 @@ class MoneyAgent(mesa.Agent):
     def step(self):
         self.move()
         if self.food == 0:
-            self.take_food()
+            self.get_food()
 
-    def take_food(self):
-        neighborhood = self.model.grid.get_neighborhood(
-            self.pos, moore=True, include_center=False
-        )
+    def get_food(self):
+        # check if food nearby & take it
+        neighborhood = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=True)
         cellmates = self.model.grid.get_cell_list_contents(neighborhood)
         for c in cellmates:
-            if c.food > 0:
+            if c.type == FOOD and c.food > 0:
                 c.food -= 1
                 self.food += 1
 
     def move(self):
         possible_steps = self.model.grid.get_neighborhood(
-            self.pos, moore=True, include_center=False
+            self.pos, moore=False, include_center=True
         )
         new_position = self.random.choice(possible_steps)
         self.model.grid.move_agent(self, new_position)

@@ -1,4 +1,4 @@
-from agent import MoneyAgent, Food
+from agent import HungryAgent, Food
 import mesa
 from typing import Union
 
@@ -8,7 +8,7 @@ class MoneyModel(mesa.Model):
     def __init__(self, N, F,  width, height):
         self.num_agents = N
         self.amount_of_food = F
-        self.grid = mesa.space.MultiGrid(width, height, True)
+        self.grid = mesa.space.MultiGrid(width, height, False)
         self.schedule = mesa.time.RandomActivation(self)
         self._steps: int = 0
         self._time = 0  # the model's clock
@@ -16,7 +16,7 @@ class MoneyModel(mesa.Model):
 
         # Create agents
         for i in range(self.num_agents):
-            a = MoneyAgent(i, self)
+            a = HungryAgent(i, self)
             self.schedule.add(a)
             # Add the agent to a random grid cell
             x = self.random.randrange(self.grid.width)

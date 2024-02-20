@@ -55,6 +55,5 @@ grid = mesa.visualization.CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 server = mesa.visualization.ModularServer(
     MoneyModel, [grid], "Money Model", model_params
 )
-
 server.port = 8521  # default
 server.launch()

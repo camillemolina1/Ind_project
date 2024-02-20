@@ -4,10 +4,11 @@ import mesa
 
 class MoneyModel(mesa.Model):
     """A model with some number of agents."""
-    def __init__(self, N, F,  width, height):
+    def __init__(self, N, F, width, height):
         self.num_agents = N
         self.amount_of_food = F
         self.grid = mesa.space.MultiGrid(width, height, False)
+
         self.schedule = mesa.time.RandomActivation(self)
         self._steps: int = 0
         self._time = 0  # the model's clock
@@ -31,4 +32,5 @@ class MoneyModel(mesa.Model):
             self.grid.place_agent(b, (x, y))
 
     def step(self):
+        # self.datacollector.collect(self)
         self.schedule.step()

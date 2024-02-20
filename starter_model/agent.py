@@ -8,7 +8,7 @@ class Food(mesa.Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
         self.type = FOOD
-        self.food = 2
+        self.food = 20
 
 
 class HungryAgent(mesa.Agent):
@@ -19,9 +19,11 @@ class HungryAgent(mesa.Agent):
         self.food = 0
 
     def step(self):
-        self.move()
-        if self.food == 0:
+        if self.food < 0:
             self.get_food()
+        if self.food > -40:
+            self.move()
+            self.food -= 1
 
     def get_food(self):
         # check if food nearby & take it
@@ -29,8 +31,8 @@ class HungryAgent(mesa.Agent):
         cellmates = self.model.grid.get_cell_list_contents(neighborhood)
         for c in cellmates:
             if c.type == FOOD and c.food > 0:
-                c.food -= 1
-                self.food += 1
+                c.food -= 10
+                self.food += 10
 
     def move(self):
         possible_steps = self.model.grid.get_neighborhood(

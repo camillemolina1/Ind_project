@@ -1,12 +1,15 @@
 # Multi-agent Cooperation Project
 
-current version:  
+#### Current version:  
   
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/02b0d9ae-38c3-42d7-97ac-6cbb86173d20)
-  
-Red = food supply   ------------------->  Grey = food supply finished  
-Blue = hungry agent  ------------------->  Green = fed agent  
 
+#### Food supplies:  
+(Red - food available)  --------------------------------->  (Grey - food supply finished)
+#### Agents:  
+(Grey - starved)  <----------------  (Blue - hungry)  ------------------->  (Green - fed)   
+
+  
 ## How to start
 
 + Activate python environment

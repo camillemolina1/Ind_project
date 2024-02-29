@@ -4,8 +4,6 @@
   
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/7d7b4b65-a425-460b-bcbd-7dd81652c061)
 
-#### Food supplies:  
-(Red - food available)  --------------------------------->  (Grey - food supply finished)
 #### Agents:  
 (Grey - starved)  <----------------  (Blue - hungry)  ------------------->  (Green - fed)   
 

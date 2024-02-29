@@ -20,7 +20,7 @@
 #### Previous versions:  
   
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/02b0d9ae-38c3-42d7-97ac-6cbb86173d20)
-!![image](https://github.com/camillemolina1/Ind_project/assets/98462350/c46c1c31-4093-4ca2-a8a9-a202241c6e43)
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/c46c1c31-4093-4ca2-a8a9-a202241c6e43)
 
 
 ## Previous Papers

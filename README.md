@@ -2,7 +2,7 @@
 
 #### Current version:  
   
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/02b0d9ae-38c3-42d7-97ac-6cbb86173d20)
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/7d7b4b65-a425-460b-bcbd-7dd81652c061)
 
 #### Food supplies:  
 (Red - food available)  --------------------------------->  (Grey - food supply finished)
@@ -16,6 +16,10 @@
 + Download mesa (if needed)
 + Run server.py
 + A new window should appear at localhost:8521 with visuals
+
+#### Previous versions:  
+  
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/02b0d9ae-38c3-42d7-97ac-6cbb86173d20)
 
 ## Previous Papers
 

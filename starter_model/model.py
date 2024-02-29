@@ -1,14 +1,15 @@
 from agent import HungryAgent, Food
+from env import Environment
 import mesa
 
 
-class MoneyModel(mesa.Model):
+class MyModel(mesa.Model):
     """A model with some number of agents."""
     def __init__(self, N, F, width, height):
         self.num_agents = N
         self.amount_of_food = F
-        self.grid = mesa.space.MultiGrid(width, height, False)
 
+        self.grid = Environment(width, height)
         self.schedule = mesa.time.RandomActivation(self)
         self._steps: int = 0
         self._time = 0  # the model's clock
@@ -34,3 +35,7 @@ class MoneyModel(mesa.Model):
     def step(self):
         # self.datacollector.collect(self)
         self.schedule.step()
+
+    # def reset(self):
+    #     # self.datacollector.collect(self)
+    #     self.state = self.start

@@ -1,9 +1,11 @@
 import mesa
-from model import MoneyModel
+import os
+from model import MyModel
+from agent import Food, HungryAgent
 
-FOOD = 0
-AGENT = 1
-
+APPLE_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/apple.jpg",
+HALF_EATEN_APPLE_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/half_eaten_apple.jpg",
+EATEN_APPLE_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/eaten_apple.jpg",
 
 model_params = {
     "N": mesa.visualization.Slider(
@@ -28,7 +30,7 @@ model_params = {
 
 
 def agent_portrayal(agent):
-    if agent.type == AGENT:
+    if isinstance(agent, HungryAgent):
         portrayal = {"Shape": "circle", "Color": "green", "Filled": "true", "Layer": 0, "r": 0.5}
         if agent.food > 0:
             portrayal["Color"] = "green"
@@ -39,17 +41,16 @@ def agent_portrayal(agent):
         else:
             portrayal["Color"] = "blue"
             portrayal["Layer"] = 0
-    else:
-        portrayal = {"Shape": "circle", "Color": "red", "Filled": "true", "Layer": 1, "r": 0.2}
+    elif isinstance(agent, Food):
+        portrayal = {"Shape": "circle", "Color": "red", "Filled": "true", "Layer": 1, "r": 0.1}
         if agent.food == 20:
-            portrayal["r"] = "0.2"
-            portrayal["Color"] = "red"
+            portrayal["Shape"] = APPLE_IMG
         if agent.food == 10:
-            portrayal["r"] = "0.1"
-            portrayal["Color"] = "red"
+            portrayal["Shape"] = HALF_EATEN_APPLE_IMG
         if agent.food == 0:
-            portrayal["Color"] = "grey"
-            portrayal["r"] = "0.1"
+            portrayal["Shape"] = EATEN_APPLE_IMG
+    else:
+        portrayal = {"Shape": "circle", "Color": "purple", "Filled": "true", "Layer": 1, "r": 1}
     return portrayal
 
 
@@ -62,7 +63,7 @@ grid = mesa.visualization.CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 # )
 
 server = mesa.visualization.ModularServer(
-    MoneyModel, [grid], "Hungry Agents Model", model_params
+    MyModel, [grid], "Hungry Agents Model", model_params
 )
 
 server.port = 8521  # default

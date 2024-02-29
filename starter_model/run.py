@@ -1,10 +1,10 @@
-from agent import MoneyModel
+from model import MyModel
 import mesa
 import numpy as np
 import pandas as pd
 import seaborn as sns   # data visualization tools
 
-model = MoneyModel(100, 10, 10)
+model = MyModel(100, 10, 10)
 for i in range(20):
     model.step()
 

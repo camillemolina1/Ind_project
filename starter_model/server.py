@@ -32,25 +32,25 @@ model_params = {
 def agent_portrayal(agent):
     if isinstance(agent, HungryAgent):
         portrayal = {"Shape": "circle", "Color": "green", "Filled": "true", "Layer": 0, "r": 0.5}
-        if agent.food > 0:
+        if agent.hunger <= 0:
             portrayal["Color"] = "green"
             portrayal["Layer"] = 0
-        elif agent.food == -40:
+        elif agent.hunger == 40:
             portrayal["Color"] = "grey"
             portrayal["Layer"] = 0
         else:
             portrayal["Color"] = "blue"
             portrayal["Layer"] = 0
     elif isinstance(agent, Food):
-        portrayal = {"Shape": "circle", "Color": "red", "Filled": "true", "Layer": 1, "r": 0.1}
-        if agent.food == 20:
+        portrayal = {"Shape": "circle", "Color": "red", "Filled": "true", "Layer": 0, "r": 0.2}
+        if agent.supply == 20:
             portrayal["Shape"] = APPLE_IMG
-        if agent.food == 10:
+        if agent.supply == 10:
             portrayal["Shape"] = HALF_EATEN_APPLE_IMG
-        if agent.food == 0:
+        if agent.supply == 0:
             portrayal["Shape"] = EATEN_APPLE_IMG
     else:
-        portrayal = {"Shape": "circle", "Color": "purple", "Filled": "true", "Layer": 1, "r": 1}
+        portrayal = {"Shape": "circle", "Color": "purple", "Filled": "true","Layer": 0, "r": 1}
     return portrayal
 
 

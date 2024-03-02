@@ -1,7 +1,7 @@
 import mesa
 import os
 from model import MyModel
-from agent import Food, BasicAgent
+from Agents.agents import Food, BasicAgent
 
 APPLE_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/apple.jpg",
 HALF_EATEN_APPLE_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/half_eaten_apple.jpg",

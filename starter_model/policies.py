@@ -1,4 +1,4 @@
-from more_agents import Food
+from Agents.food import Food
 
 
 def stay_close_policy(agent):

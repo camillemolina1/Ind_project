@@ -1,5 +1,5 @@
-from agent import BasicAgent, StayCloseAgent
-from more_agents import Food
+from Agents.agents import BasicAgent, StayCloseAgent
+from Agents.food import Food
 from env import Environment
 import mesa
 

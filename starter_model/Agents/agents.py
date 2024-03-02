@@ -1,6 +1,6 @@
 import mesa
 from policies import stay_close_policy
-from more_agents import Food
+from food import Food
 
 
 # A basic Agent that cannot move. It simply knows if it is next to an apple to go next to it and eat it

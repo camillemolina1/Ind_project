@@ -1,6 +1,11 @@
-from agent import HungryAgent, Food
+from agent import BasicAgent, StayCloseAgent
+from more_agents import Food
 from env import Environment
 import mesa
+
+EATEN_APPLE = 0
+HALF_EATEN_APPLE = 10
+APPLE = 20
 
 
 class MyModel(mesa.Model):
@@ -15,10 +20,11 @@ class MyModel(mesa.Model):
         self._steps: int = 0
         self._time = 0  # the model's clock
         self.running = True
+        self.food_position = list()
 
         # Create agents
         for i in range(self.num_agents):
-            a = HungryAgent(i, self)
+            a = StayCloseAgent(i, self)
             self.schedule.add(a)
             # Add the agent to a random grid cell
             x, y = self.find_valid_location()
@@ -29,6 +35,7 @@ class MyModel(mesa.Model):
             # Add the agent to a random grid cell
             x, y = self.find_valid_location()
             self.grid.place_agent(b, (x, y))
+            self.food_position.append((APPLE, x, y))
 
     def step(self):
         # self.datacollector.collect(self)
@@ -37,7 +44,7 @@ class MyModel(mesa.Model):
 
     def check_for_dead(self):
         for agent in self.schedule.agents:
-            if isinstance(agent, HungryAgent) and agent.hunger >= 40:
+            if isinstance(agent, BasicAgent) and agent.hunger >= 40:
                 self.schedule.remove(agent)
 
     def find_valid_location(self):
@@ -48,6 +55,3 @@ class MyModel(mesa.Model):
             y = self.random.randrange(self.grid.height)
         return x, y
 
-    # def reset(self):
-    #     # self.datacollector.collect(self)
-    #     self.state = self.start

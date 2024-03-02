@@ -1,7 +1,7 @@
 import mesa
 import os
 from model import MyModel
-from agent import Food, HungryAgent
+from agent import Food, BasicAgent
 
 APPLE_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/apple.jpg",
 HALF_EATEN_APPLE_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/half_eaten_apple.jpg",
@@ -30,7 +30,7 @@ model_params = {
 
 
 def agent_portrayal(agent):
-    if isinstance(agent, HungryAgent):
+    if isinstance(agent, BasicAgent):
         portrayal = {"Shape": "circle", "Color": "green", "Filled": "true", "Layer": 0, "r": 0.5}
         if agent.hunger <= 0:
             portrayal["Color"] = "green"

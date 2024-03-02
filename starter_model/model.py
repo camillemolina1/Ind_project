@@ -1,5 +1,5 @@
-from Agents.agents import BasicAgent, StayCloseAgent
-from Agents.food import Food
+from agents import BasicAgent, StayCloseAgent, OmnicientAgent
+from food import Food
 from env import Environment
 import mesa
 
@@ -20,22 +20,24 @@ class MyModel(mesa.Model):
         self._steps: int = 0
         self._time = 0  # the model's clock
         self.running = True
-        self.food_position = list()
+
+        food_locations = []
+        for j in range(self.num_agents, self.amount_of_food + self.num_agents):
+            x, y = self.find_valid_location()
+            b = Food(j, (x, y), self)
+            self.schedule.add(b)
+            # Add the agent to a random grid cell
+            self.grid.place_agent(b, (x, y))
+            food_locations.append((x, y))
+        print("food locations:", food_locations)
 
         # Create agents
         for i in range(self.num_agents):
-            a = StayCloseAgent(i, self)
+            a = OmnicientAgent(i, food_locations, self)
             self.schedule.add(a)
             # Add the agent to a random grid cell
             x, y = self.find_valid_location()
             self.grid.place_agent(a, (x, y))
-
-        for j in range(self.num_agents, self.amount_of_food + self.num_agents):
-            b = Food(j, self)
-            # Add the agent to a random grid cell
-            x, y = self.find_valid_location()
-            self.grid.place_agent(b, (x, y))
-            self.food_position.append((APPLE, x, y))
 
     def step(self):
         # self.datacollector.collect(self)

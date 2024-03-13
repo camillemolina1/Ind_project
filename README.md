@@ -24,8 +24,11 @@ Soil : Brown squares
 #### Previous versions:  
   
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/8101e2c8-e268-49a0-aa0c-4bba25ebb900)
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/02b0d9ae-38c3-42d7-97ac-6cbb86173d20)
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/c46c1c31-4093-4ca2-a8a9-a202241c6e43)
+  
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/02b0d9ae-38c3-42d7-97ac-6cbb86173d20)  
+  
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/aec96c37-bafe-4381-bc6b-5066adba2fd1)
+
 
 
 ## Previous Papers

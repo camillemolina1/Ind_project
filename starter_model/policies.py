@@ -1,4 +1,15 @@
 from food import Food
+from place import Goal, Soil
+
+NOTHING = 0
+APPLE = 1
+SEEDS = 2
+
+
+# simply chooses a random move
+def random_policy(agent):
+    valid_moves = find_all_valid_moves(agent)
+    return agent.random.choice(valid_moves)
 
 
 # can only see if in immediate proximity of apple
@@ -20,19 +31,19 @@ def stay_close_policy(agent):
 # knows where all apples are but not if they have a supply or not unless in immediate proximity
 # will move closer to an apple it thinks has a supply
 def omnicient_policy(agent):
+    food = find_food(agent)
     valid_moves = find_all_valid_moves(agent)
     best_move = [agent.pos, 100]
     for m in valid_moves:
-        for food in agent.food:
-            if food[0] > 0:
-                d = distance_from_food(m, (food[1], food[2]))
-                if d < best_move[1]:
-                    best_move = [m, d]
+        for f in food:
+            d = distance_from(m, f)
+            if d < best_move[1]:
+                best_move = [m, d]
     return best_move[0]
 
 
-def distance_from_food(pos, food_pos):
-    return abs(pos[0] - food_pos[0]) + abs(pos[1] - food_pos[1])
+def distance_from(pos, other_pos):
+    return abs(pos[0] - other_pos[0]) + abs(pos[1] - other_pos[1])
 
 
 def find_all_valid_moves(agent):
@@ -48,8 +59,49 @@ def find_all_valid_moves(agent):
 
 def check_if_valid_move(agent, move):
     neighbours = agent.model.grid.get_cell_list_contents(move)
-    if len(neighbours) != 0:
-        return False
-    else:
+    if len(neighbours) == 0:
         return True
+    else:
+        if len(neighbours) == 1 and isinstance(neighbours[0], Soil):
+            return True
+    return False
 
+
+def find_food(agent):
+    food = []
+    for agent in agent.model.agents:
+        if isinstance(agent, Food):
+            if agent.supply > 0:
+                food.append(agent.pos)
+    return food
+
+
+def find_place(agent, item):
+    places = []
+    for agent in agent.model.agents:
+        if isinstance(agent, item):
+            places.append(agent.pos)
+    return places
+
+
+def trading_policy(agent):
+    if agent.has == APPLE:
+        goals = find_place(agent, Goal)
+        print(goals)
+        return find_best_move(agent, goals)
+    elif agent.has == SEEDS:
+        soil = find_place(agent, Soil)
+        return find_best_move(agent, soil)
+    else:
+        return omnicient_policy(agent)
+
+
+def find_best_move(agent, objs):
+    valid_moves = find_all_valid_moves(agent)
+    best_move = [agent.pos, 100]
+    for m in valid_moves:
+        for o in objs:
+            d = distance_from(m, o)
+            if d < best_move[1]:
+                best_move = [m, d]
+    return best_move[0]

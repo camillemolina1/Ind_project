@@ -1,7 +1,7 @@
-from mesa.space import SingleGrid
+from mesa.space import SingleGrid, MultiGrid
 
 
-class Environment(SingleGrid):
+class Environment(MultiGrid):
     def __init__(self, width, height):
         super().__init__(width, height, torus=False)
 

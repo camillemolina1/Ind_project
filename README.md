@@ -2,12 +2,14 @@
 
 #### Current version:  
   
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/7d7b4b65-a425-460b-bcbd-7dd81652c061)
-
-#### Agents:  
-(Grey - starved)  <----------------  (Blue - hungry)  ------------------->  (Green - fed)   
-
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/5a436af7-87d4-4cf9-ace2-f9190098f05a)
   
+#### Meanings:  
+Agents: (Blue circle - hungry)  ------>  (Green circle - fed)   
+Food: Red circle (the bigger the more food available)
+Trading stations : Yellow Star
+Soil : Brown squares
+
 ## How to start
 
 + Activate python environment
@@ -17,6 +19,7 @@
 
 #### Previous versions:  
   
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/7d7b4b65-a425-460b-bcbd-7dd81652c061)
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/02b0d9ae-38c3-42d7-97ac-6cbb86173d20)
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/c46c1c31-4093-4ca2-a8a9-a202241c6e43)
 

@@ -1,13 +1,21 @@
 # Multi-agent Cooperation Project
 
-#### Current version:  
+### Current version:  
+Agents need to eat to stay alive    
+  
+Agents can: 
++ move around the grid
++ eat food
++ trade food for seeds at the trading stations
++ plant the seeds on the soil  
+
   
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/5a436af7-87d4-4cf9-ace2-f9190098f05a)
   
 #### Meanings:  
 Agents: (Blue circle - hungry)  ------>  (Green circle - fed)   
-Food: Red circle (the bigger the more food available)
-Trading stations : Yellow Star
+Food: Red circle (the bigger the more food available)  
+Trading stations : Yellow Star  
 Soil : Brown squares
   
   

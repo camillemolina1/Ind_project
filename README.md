@@ -26,16 +26,6 @@ Soil : Brown squares
 + Download mesa (if needed)
 + Run server.py
 + A new window should appear at localhost:8521 with visuals
-  
-  
-   
-#### Previous versions:  
-  
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/8101e2c8-e268-49a0-aa0c-4bba25ebb900)
-  
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/02b0d9ae-38c3-42d7-97ac-6cbb86173d20)  
-  
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/aec96c37-bafe-4381-bc6b-5066adba2fd1)
 
 
 
@@ -49,4 +39,15 @@ Soil : Brown squares
     
   
     ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/9ce96e66-06f6-4330-8e6e-9b4d9eaaf264)
+
+  
+   
+## Previous versions:  
+  
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/8101e2c8-e268-49a0-aa0c-4bba25ebb900)
+  
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/02b0d9ae-38c3-42d7-97ac-6cbb86173d20)  
+  
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/aec96c37-bafe-4381-bc6b-5066adba2fd1)
+
 

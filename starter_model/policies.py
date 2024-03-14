@@ -61,9 +61,6 @@ def check_if_valid_move(agent, move):
     neighbours = agent.model.grid.get_cell_list_contents(move)
     if len(neighbours) == 0:
         return True
-    else:
-        if len(neighbours) == 1 and isinstance(neighbours[0], Soil):
-            return True
     return False
 
 
@@ -87,7 +84,6 @@ def find_place(agent, item):
 def trading_policy(agent):
     if agent.has == APPLE:
         goals = find_place(agent, Goal)
-        print(goals)
         return find_best_move(agent, goals)
     elif agent.has == SEEDS:
         soil = find_place(agent, Soil)

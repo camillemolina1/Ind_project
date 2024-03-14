@@ -34,7 +34,7 @@ class BasicAgent(mesa.Agent):
 
     def eat(self, apple):
         apple.supply -= 1
-        self.hunger -= 2
+        self.hunger -= 1
 
     def move(self):
         new_position = random_policy(self)
@@ -72,10 +72,11 @@ class OmnicientAgent(BasicAgent):
 
 
 class IntelligentAgent(OmnicientAgent):
-    def __init__(self, unique_id, model):
+    def __init__(self, unique_id, supply, model):
         super().__init__(unique_id, model)
         self.hunger = 0
         self.has = NOTHING
+        self.food_supply = supply
 
     def move(self):
         new_position = trading_policy(self)
@@ -111,7 +112,7 @@ class IntelligentAgent(OmnicientAgent):
         self.has = SEEDS
 
     def plant(self, pos):
-        b = Food(self.model.next_id(), pos, self.model)
+        b = Food(self.model.next_id(), pos, self.food_supply, self.model)
         self.model.schedule.add(b)
         # Add the agent to a random grid cell
         self.model.grid.place_agent(b, pos)

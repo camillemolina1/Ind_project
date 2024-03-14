@@ -1,5 +1,6 @@
 import mesa
 import os
+from mesa_viz_tornado.modules import ChartModule
 from model import MyModel
 from agents import Food, BasicAgent, Goal, Soil
 
@@ -26,6 +27,14 @@ model_params = {
         1,
         description="Choose how many food sources to include in the model",
     ),
+    "S": mesa.visualization.Slider(
+        "Amount of food supply in a plant",
+        2,
+        1,
+        4,
+        1,
+        description="Choose how big the food sources are",
+    ),
     "width": 10,
     "height": 10,
 }
@@ -49,6 +58,10 @@ def agent_portrayal(agent):
             portrayal["Layer"] = 0
     elif isinstance(agent, Food):
         portrayal = {"Shape": "circle", "Color": "red", "Filled": "true", "Layer": 1, "r": 0.5}
+        if agent.supply == 4:
+            portrayal["r"] = "1"
+        if agent.supply == 3:
+            portrayal["r"] = "0.75"
         if agent.supply == 2:
             portrayal["r"] = "0.5"
         if agent.supply == 1:
@@ -62,9 +75,22 @@ def agent_portrayal(agent):
 
 grid = mesa.visualization.CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 
+count_chart = ChartModule(
+    [{"Label": "Agent_count", "Color": "#21A2EC"}, {"Label": "Food_count", "Color": "#EC4521"}],
+    data_collector_name="count_chart"
+)
+
+hunger_level_chart = ChartModule(
+    [{"Label": "Agent 1", "Color": "#EC4521"}, {"Label": "Agent 2", "Color": "#21A2EC"},
+     {"Label": "Agent 3", "Color": "#24D339"}, {"Label": "Agent 4", "Color": "#EDDE47"},
+     {"Label": "Agent 5", "Color": "#ED47E3"}], data_collector_name="hunger_levels"
+)
+
+count_chart.canvas_y_max = 300
+hunger_level_chart.canvas_y_max = 300
 
 server = mesa.visualization.ModularServer(
-    MyModel, [grid], "Hungry Agents Model", model_params
+    MyModel, [grid, hunger_level_chart, count_chart], "Hungry Agents Model", model_params
 )
 
 server.port = 8521  # default

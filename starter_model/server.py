@@ -46,18 +46,18 @@ def agent_portrayal(agent):
     elif isinstance(agent, Soil):
         portrayal = {"Shape": "rect", "Color": "brown", "Filled": "true", "Layer": 0, "w": 1, "h": 1}
     elif isinstance(agent, BasicAgent):
-        portrayal = {"Shape": "circle", "Color": "green", "Filled": "true", "Layer": 1, "r": 0.5}
+        portrayal = {"Shape": "circle", "Color": "blue", "Filled": "true", "Layer": 1, "r": 0.5}
         if agent.hunger <= 0:
-            portrayal["Color"] = "green"
+            portrayal["Color"] = "blue"
             portrayal["Layer"] = 0
         elif agent.hunger == 4:
             portrayal["Color"] = "grey"
             portrayal["Layer"] = 0
         else:
-            portrayal["Color"] = "blue"
+            portrayal["Color"] = "red"
             portrayal["Layer"] = 0
     elif isinstance(agent, Food):
-        portrayal = {"Shape": "circle", "Color": "red", "Filled": "true", "Layer": 1, "r": 0.5}
+        portrayal = {"Shape": "circle", "Color": "green", "Filled": "true", "Layer": 1, "r": 0.5}
         if agent.supply == 4:
             portrayal["r"] = "1"
         if agent.supply == 3:

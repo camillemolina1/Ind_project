@@ -1,4 +1,4 @@
-from food import Food
+from plant import Plant
 from place import TradingMarket, Soil
 
 NOTHING = 0
@@ -22,7 +22,7 @@ def stay_close_policy(agent):
         for n in neighbourhood:
             distant_neighbours = agent.model.grid.get_cell_list_contents(n)
             for distant_neighbour in distant_neighbours:
-                if isinstance(distant_neighbour, Food) and distant_neighbour.supply > 0:
+                if isinstance(distant_neighbour, Plant) and distant_neighbour.supply > 0:
                     return m
 
     return agent.random.choice(valid_moves)
@@ -31,7 +31,7 @@ def stay_close_policy(agent):
 # knows where all apples are but not if they have a supply or not unless in immediate proximity
 # will move closer to an apple it thinks has a supply
 def omniscient_policy(agent):
-    food = find_thing(agent, Food)
+    food = find_thing(agent, Plant)
     valid_moves = find_all_valid_moves(agent)
     best_move = [agent.pos, 100]
     if len(valid_moves) != 0 and len(food) != 0:
@@ -54,7 +54,7 @@ def trading_policy(agent):
         return find_shortest_path(agent, soil)
     else:
         print("finding apple")
-        food = find_thing(agent, Food)
+        food = find_thing(agent, Plant)
         return find_shortest_path(agent, food)
 
 
@@ -95,7 +95,7 @@ def find_thing(agent, item):
     items = []
     for a in agent.model.agents:
         if isinstance(a, item):
-            if item == Food and a.supply > 0:
+            if item == Plant and a.supply > 0:
                 items.append(a.pos)
             elif item == Soil and a.contains != APPLE:
                 items.append(a.pos)

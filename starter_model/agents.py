@@ -1,10 +1,10 @@
 import mesa
 from policies import stay_close_policy, omniscient_policy, random_policy, trading_policy
-from food import Food
+from plant import Plant
 from place import TradingMarket, Soil
 
 NOTHING = 0
-APPLE = 1
+FOOD = 1
 SEEDS = 2
 
 
@@ -16,10 +16,10 @@ class BasicAgent(mesa.Agent):
         self.hunger = 0
 
     def step(self):
-        apple = self.check_if_near(Food)
-        if apple and apple.supply > 0:
+        food = self.check_if_near(Plant)
+        if food and food.supply > 0:
             if self.hunger > 0:
-                self.eat(apple)
+                self.eat(food)
         else:
             self.move()
             self.hunger += 0.1
@@ -64,9 +64,9 @@ class OmnicientAgent(BasicAgent):
         self.model.grid.move_agent(self, new_position)
 
     def step(self):
-        apple = self.check_if_near(Food)
-        if apple and apple.supply > 0 and self.hunger > 0:
-            self.eat(apple)
+        food = self.check_if_near(Plant)
+        if food and food.supply > 0 and self.hunger > 0:
+            self.eat(food)
         self.move()
         self.hunger += 0.1
 
@@ -83,40 +83,47 @@ class IntelligentAgent(OmnicientAgent):
         self.model.grid.move_agent(self, new_position)
 
     def step(self):
-        apple = self.check_if_near(Food)
+        food = self.check_if_near(Plant)
         soil = self.check_if_near(Soil)
-        goal = self.check_if_near(TradingMarket)
+        market = self.check_if_near(TradingMarket)
 
-        if apple and apple.supply > 0:
+        if food and food.supply > 0:
             if self.hunger > 0:
-                self.eat(apple)
+                self.eat(food)
+                if food.supply == 0:
+                    soil.contains = NOTHING
+                if food.supply == 1:
+                    soil.contains = FOOD
+                return
             elif self.has == NOTHING:
-                self.take_apple(apple)
-            if apple.supply == 0:
-                soil.contains = NOTHING
-            return
+                self.take_apple(food)
+                if food.supply == 0:
+                    soil.contains = NOTHING
+                if food.supply == 1:
+                    soil.contains = FOOD
+                return
         if soil and self.has == SEEDS:
             if self.check_if_empty(soil.pos):
                 self.plant(soil.pos)
-                soil.contains = APPLE
+                soil.contains = FOOD
                 return
         # agent trades apple for seeds
-        if goal and self.has == APPLE:
+        if market and self.has == FOOD:
             self.trade()
             return
 
         self.move()
         self.hunger += 0.1
 
-    def take_apple(self, apple):
-        apple.supply -= 1
-        self.has = APPLE
+    def take_apple(self, food):
+        food.supply -= 1
+        self.has = FOOD
 
     def trade(self):
         self.has = SEEDS
 
     def plant(self, pos):
-        b = Food(self.model.next_id(), pos, self.food_supply, self.model)
+        b = Plant(self.model.next_id(), pos, self.food_supply, self.model)
         self.model.schedule.add(b)
         # Add the agent to a random grid cell
         self.model.grid.place_agent(b, pos)

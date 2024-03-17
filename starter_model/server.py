@@ -2,13 +2,15 @@ import mesa
 import os
 from mesa_viz_tornado.modules import ChartModule
 from model import MyModel
-from agents import Food, BasicAgent, TradingMarket, Soil
+from agents import Plant, BasicAgent, TradingMarket, Soil
 
 STAR_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/star.jpg",
-SOIL_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/soil.jpg",
-APPLE_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/apple.jpg",
-HALF_EATEN_APPLE_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/half_eaten_apple.jpg",
-EATEN_APPLE_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/eaten_apple.jpg",
+MARKET_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Market.png",
+SOIL_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Soil.png"
+PLANT_1_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant1.png",
+PLANT_2_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant2.png",
+PLANT_3_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant3.png",
+PLANT_4_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant4.png",
 
 model_params = {
     "N": mesa.visualization.Slider(
@@ -42,9 +44,9 @@ model_params = {
 
 def agent_portrayal(agent):
     if isinstance(agent, TradingMarket):
-        portrayal = {"Shape": STAR_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
-    elif isinstance(agent, Soil):
-        portrayal = {"Shape": "rect", "Color": "brown", "Filled": "true", "Layer": 0, "w": 1, "h": 1}
+        portrayal = {"Shape": MARKET_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
+    elif isinstance(agent, Soil) and agent.contains == 0:
+        portrayal = {"Shape": SOIL_IMG, "Color": "brown", "Filled": "true", "Layer": 0, "w": 1, "h": 1}
     elif isinstance(agent, BasicAgent):
         portrayal = {"Shape": "circle", "Color": "blue", "Filled": "true", "Layer": 1, "r": 0.5}
         if agent.hunger <= 0:
@@ -56,20 +58,25 @@ def agent_portrayal(agent):
         else:
             portrayal["Color"] = "red"
             portrayal["Layer"] = 0
-    elif isinstance(agent, Food):
+    elif isinstance(agent, Plant):
         portrayal = {"Shape": "circle", "Color": "green", "Filled": "true", "Layer": 1, "r": 0.5}
         if agent.supply == 4:
+            portrayal["Shape"] = PLANT_4_IMG
             portrayal["r"] = "1"
         if agent.supply == 3:
+            portrayal["Shape"] = PLANT_3_IMG
             portrayal["r"] = "0.75"
         if agent.supply == 2:
+            portrayal["Shape"] = PLANT_2_IMG
             portrayal["r"] = "0.5"
         if agent.supply == 1:
+            portrayal["Shape"] = PLANT_1_IMG
             portrayal["r"] = "0.25"
         if agent.supply == 0:
+            portrayal["Shape"] = SOIL_IMG
             portrayal["r"] = "0.0"
     else:
-        portrayal = {"Shape": "circle", "Color": "purple", "Filled": "true", "Layer": 0, "r": 1}
+        portrayal = {"Shape": "circle", "Color": "brown", "Filled": "true", "Layer": 0, "r": 1}
     return portrayal
 
 

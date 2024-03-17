@@ -1,7 +1,7 @@
 from mesa import DataCollector
 
 from agents import BasicAgent, StayCloseAgent, OmnicientAgent, IntelligentAgent
-from food import Food
+from plant import Plant
 from env import Environment
 from place import TradingMarket, Soil
 import mesa
@@ -25,7 +25,7 @@ class MyModel(mesa.Model):
         self.count_chart = DataCollector(
             {
                 "Agent_count": lambda l: self.count(BasicAgent),
-                "Food_count": lambda l: self.count(Food),
+                "Food_count": lambda l: self.count(Plant),
             }
         )
         self.hunger_levels = DataCollector(
@@ -50,7 +50,7 @@ class MyModel(mesa.Model):
         # place food
         for j in range(self.num_agents, self.amount_of_food + self.num_agents):
             x, y = self.find_valid_food_location()
-            b = Food(j, (x, y), self.food_supply, self)
+            b = Plant(j, (x, y), self.food_supply, self)
             self.schedule.add(b)
             # Add the agent to a random grid cell
             self.grid.place_agent(b, (x, y))
@@ -81,7 +81,7 @@ class MyModel(mesa.Model):
             if isinstance(agent, BasicAgent) and agent.hunger >= 4:
                 self.schedule.remove(agent)
                 self.grid.remove_agent(agent)
-            if isinstance(agent, Food) and agent.supply == 0:
+            if isinstance(agent, Plant) and agent.supply == 0:
                 self.schedule.remove(agent)
                 self.grid.remove_agent(agent)
 
@@ -89,7 +89,7 @@ class MyModel(mesa.Model):
         count = 0
         for agent in self.schedule.agents:
             if isinstance(agent, obj):
-                if isinstance(agent, Food):
+                if isinstance(agent, Plant):
                     count += agent.supply
                 else:
                     count += 1

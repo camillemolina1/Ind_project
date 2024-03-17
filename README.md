@@ -10,12 +10,12 @@ Agents can:
 + plant the seeds on the soil  
 
   
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/e61a12a4-8d8b-4fea-a890-8fe3499faa52)
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/2e304d0e-8925-485d-af47-f1da94f80a86)
 
   
 #### Meanings:  
-Agents: (Blue circle - hungry)  ------>  (Green circle - fed)   
-Food: Red circle (the bigger the more food available)  
+Agents: (Red circle - hungry)  ------>  (Blue circle - fed)   
+Food: Green circle (the bigger the more food available)  
 Trading stations : Yellow Star  
 Soil : Brown squares
   
@@ -44,6 +44,8 @@ Soil : Brown squares
   
    
 ## Previous versions:  
+
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/e61a12a4-8d8b-4fea-a890-8fe3499faa52)
 
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/5a436af7-87d4-4cf9-ace2-f9190098f05a)
   

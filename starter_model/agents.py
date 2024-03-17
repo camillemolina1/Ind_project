@@ -1,5 +1,5 @@
 import mesa
-from policies import stay_close_policy, omnicient_policy, random_policy, trading_policy
+from policies import stay_close_policy, omniscient_policy, random_policy, trading_policy
 from food import Food
 from place import Goal, Soil
 
@@ -60,7 +60,7 @@ class OmnicientAgent(BasicAgent):
         self.hunger = 0
 
     def move(self):
-        new_position = omnicient_policy(self)
+        new_position = omniscient_policy(self)
         self.model.grid.move_agent(self, new_position)
 
     def step(self):

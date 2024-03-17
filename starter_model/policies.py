@@ -43,8 +43,30 @@ def omniscient_policy(agent):
     return best_move[0]
 
 
+def trading_policy(agent):
+    if agent.has == APPLE:
+        print("finding trading station")
+        goals = find_thing(agent, Goal)
+        return find_shortest_path(agent, goals)
+    elif agent.has == SEEDS:
+        print("finding soil")
+        soil = find_thing(agent, Soil)
+        return find_shortest_path(agent, soil)
+    else:
+        print("finding apple")
+        food = find_thing(agent, Food)
+        return find_shortest_path(agent, food)
+
+
 def distance_from(pos, other_pos):
     return abs(pos[0] - other_pos[0]) + abs(pos[1] - other_pos[1])
+
+
+def check_if_valid_move(agent, move):
+    neighbours = agent.model.grid.get_cell_list_contents(move)
+    if len(neighbours) == 0:
+        return True
+    return False
 
 
 def find_all_valid_moves(agent):
@@ -58,11 +80,15 @@ def find_all_valid_moves(agent):
     return moves
 
 
-def check_if_valid_move(agent, move):
-    neighbours = agent.model.grid.get_cell_list_contents(move)
-    if len(neighbours) == 0:
-        return True
-    return False
+def find_all_valid_moves_given_position(agent, pos):
+    moves = []
+    possible_moves = agent.model.grid.get_neighborhood(
+        pos, moore=False, include_center=False
+    )
+    for p in possible_moves:
+        if check_if_valid_move(agent, p):
+            moves.append(p)
+    return moves
 
 
 def find_thing(agent, item):
@@ -74,24 +100,6 @@ def find_thing(agent, item):
             elif item != Food:
                 items.append(a.pos)
     return items
-
-
-def trading_policy(agent):
-    if agent.has == APPLE:
-        print("finding trading station")
-        goals = find_thing(agent, Goal)
-        m = find_shortest_path(agent, goals)
-        print(m)
-        return m
-    elif agent.has == SEEDS:
-        print("finding soil")
-        soil = find_thing(agent, Soil)
-        return find_shortest_path(agent, soil)
-    else:
-        print("finding apple")
-        food = find_thing(agent, Food)
-        print("found apples")
-        return find_shortest_path(agent, food)
 
 
 def find_best_move(agent, objs):
@@ -118,46 +126,36 @@ def find_best_move_given_path(agent, move, objs, path):
     return best_move[0]
 
 
-def find_all_valid_moves_given_position(agent, pos):
-    moves = []
-    possible_moves = agent.model.grid.get_neighborhood(
-        pos, moore=False, include_center=False
-    )
-    for p in possible_moves:
-        if check_if_valid_move(agent, p):
-            moves.append(p)
-    return moves
-
-
 def find_shortest_path(agent, objs):
-    path = []
-    valid_moves = find_all_valid_moves(agent)
-    random_move = agent.random.choice(valid_moves)
-    print(objs)
+    paths = []
+    moves_tried = []
+    moves = find_all_valid_moves(agent)
+    random_move = agent.random.choice(moves)
 
     if len(objs) == 0:
-        print("no apples left")
         return random_move
 
-    move = find_best_move(agent, objs)
-    path.append(move)
-    neighborhood = agent.model.grid.get_neighborhood(
-        move, moore=False, include_center=False
-    )
-    print("does neighborhood contain an obj", lists_contain(neighborhood, objs))
+    for m in moves:
+        paths.append([m])
+        moves_tried.append(m)
+        neighborhood = agent.model.grid.get_neighborhood(m, moore=False, include_center=False)
+        if lists_contain(neighborhood, objs):
+            return m
 
-    while not lists_contain(neighborhood, objs):
-        new_move = find_best_move_given_path(agent, move, objs, path)
-        if move == new_move:
-            return random_move
-        move = new_move
-        path.append(move)
-        print("path :", path)
-        neighborhood = agent.model.grid.get_neighborhood(
-            move, moore=False, include_center=False
-        )
-    print("path :", path)
-    return path[0]
+    while len(paths) != 0:
+        new_paths = []
+        for p in paths:
+            moves = find_all_valid_moves_given_position(agent, p[len(p) - 1])
+            for m in moves:
+                if not list_contains(m, moves_tried):
+                    new_paths.append(p + [m])
+                    moves_tried.append(m)
+            neighborhood = agent.model.grid.get_neighborhood(p[len(p) - 1], moore=False, include_center=False)
+            if lists_contain(neighborhood, objs):
+                print(p[0])
+                return p[0]
+        paths = new_paths
+    return find_best_move(agent, objs)
 
 
 def list_contains(p, ls):

@@ -1,7 +1,7 @@
 import mesa
 from policies import stay_close_policy, omniscient_policy, random_policy, trading_policy
 from food import Food
-from place import Goal, Soil
+from place import TradingMarket, Soil
 
 NOTHING = 0
 APPLE = 1
@@ -84,23 +84,27 @@ class IntelligentAgent(OmnicientAgent):
 
     def step(self):
         apple = self.check_if_near(Food)
+        soil = self.check_if_near(Soil)
+        goal = self.check_if_near(TradingMarket)
+
         if apple and apple.supply > 0:
             if self.hunger > 0:
                 self.eat(apple)
-                return
             elif self.has == NOTHING:
                 self.take_apple(apple)
-                return
-        soil = self.check_if_near(Soil)
+            if apple.supply == 0:
+                soil.contains = NOTHING
+            return
         if soil and self.has == SEEDS:
             if self.check_if_empty(soil.pos):
                 self.plant(soil.pos)
+                soil.contains = APPLE
                 return
-        goal = self.check_if_near(Goal)
         # agent trades apple for seeds
         if goal and self.has == APPLE:
             self.trade()
             return
+
         self.move()
         self.hunger += 0.1
 

@@ -1,5 +1,5 @@
 from food import Food
-from place import Goal, Soil
+from place import TradingMarket, Soil
 
 NOTHING = 0
 APPLE = 1
@@ -46,7 +46,7 @@ def omniscient_policy(agent):
 def trading_policy(agent):
     if agent.has == APPLE:
         print("finding trading station")
-        goals = find_thing(agent, Goal)
+        goals = find_thing(agent, TradingMarket)
         return find_shortest_path(agent, goals)
     elif agent.has == SEEDS:
         print("finding soil")
@@ -97,7 +97,9 @@ def find_thing(agent, item):
         if isinstance(a, item):
             if item == Food and a.supply > 0:
                 items.append(a.pos)
-            elif item != Food:
+            elif item == Soil and a.contains != APPLE:
+                items.append(a.pos)
+            elif item == TradingMarket:
                 items.append(a.pos)
     return items
 

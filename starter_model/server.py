@@ -2,7 +2,7 @@ import mesa
 import os
 from mesa_viz_tornado.modules import ChartModule
 from model import MyModel
-from agents import Food, BasicAgent, Goal, Soil
+from agents import Food, BasicAgent, TradingMarket, Soil
 
 STAR_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/star.jpg",
 SOIL_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/soil.jpg",
@@ -41,7 +41,7 @@ model_params = {
 
 
 def agent_portrayal(agent):
-    if isinstance(agent, Goal):
+    if isinstance(agent, TradingMarket):
         portrayal = {"Shape": STAR_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
     elif isinstance(agent, Soil):
         portrayal = {"Shape": "rect", "Color": "brown", "Filled": "true", "Layer": 0, "w": 1, "h": 1}
@@ -86,8 +86,6 @@ hunger_level_chart = ChartModule(
      {"Label": "Agent 5", "Color": "#ED47E3"}], data_collector_name="hunger_levels"
 )
 
-count_chart.canvas_y_max = 300
-hunger_level_chart.canvas_y_max = 300
 
 server = mesa.visualization.ModularServer(
     MyModel, [grid, hunger_level_chart, count_chart], "Hungry Agents Model", model_params

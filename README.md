@@ -44,6 +44,7 @@ Soil : Brown squares
   
    
 ## Previous versions:  
+  
 
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/e61a12a4-8d8b-4fea-a890-8fe3499faa52)
 

@@ -1,8 +1,8 @@
 import mesa
-from policies import stay_close_policy, omniscient_policy, random_policy, trading_policy
+from policies import stay_close_policy, omniscient_policy, random_policy, simple_trading_policy, let_seeds_grow_policy
 from plant import Plant
 from place import TradingMarket
-import variables as v
+import values as v
 
 
 # A basic Agent that always moves randomly. If it is next to an apple it will eat it
@@ -73,15 +73,16 @@ class OmnicientAgent(BasicAgent):
 
 
 class IntelligentAgent(OmnicientAgent):
-    def __init__(self, unique_id, plant_size, growth, model):
+    def __init__(self, unique_id, plant_size, plant_params, model):
         super().__init__(unique_id, model)
         self.hunger = 0
+        self.hunger_limit = 0
         self.has = v.SOIL
         self.plant_size = plant_size
-        self.plant_growth = growth
+        self.plant_params = plant_params
 
     def move(self):
-        new_position = trading_policy(self)
+        new_position = simple_trading_policy(self)
         self.model.grid.move_agent(self, new_position)
 
     def step(self):
@@ -90,7 +91,7 @@ class IntelligentAgent(OmnicientAgent):
         market = self.check_if_near(TradingMarket, 0)
 
         if plant and v.SOIL < plant.size < v.SEEDS:
-            if self.hunger > 0:
+            if self.hunger > self.hunger_limit:
                 self.eat(plant)
                 return
             elif self.has == v.SOIL:
@@ -132,3 +133,18 @@ class IntelligentAgent(OmnicientAgent):
                 if isinstance(c, Plant) and c.size == v.SOIL:
                     return True
         return False
+
+
+class IntelligentAgent2(IntelligentAgent):
+    def __init__(self, unique_id, plant_size, plant_params, model):
+        super().__init__(unique_id, plant_size, plant_params, model)
+        self.hunger = 0
+        self.has = v.SOIL
+        self.plant_size = plant_size
+        self.plant_params = plant_params
+        self.hunger_limit = 1.5
+
+    def move(self):
+        new_position = let_seeds_grow_policy(self)
+        self.model.grid.move_agent(self, new_position)
+

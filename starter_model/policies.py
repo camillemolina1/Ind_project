@@ -1,6 +1,6 @@
 from plant import Plant
 from place import TradingMarket
-import variables as v
+import values as v
 
 
 # simply chooses a random move
@@ -40,7 +40,7 @@ def omniscient_policy(agent):
     return best_move[0]
 
 
-def trading_policy(agent):
+def simple_trading_policy(agent):
     if agent.has == v.PLANT:
         print("finding trading station")
         goals = find_thing(agent, TradingMarket, 0)
@@ -55,6 +55,24 @@ def trading_policy(agent):
     if len(plant) == 0:
         plant = find_thing(agent, Plant, v.SEEDS)
     return find_shortest_path(agent, plant)
+
+
+def let_seeds_grow_policy(agent):
+    if agent.has == v.PLANT:
+        print("finding trading station")
+        markets = find_thing(agent, TradingMarket, 0)
+        return find_shortest_path(agent, markets)
+    elif agent.has == v.SEEDS:
+        print("finding soil")
+        soil = find_thing(agent, Plant, v.SOIL)
+        if len(soil) != 0:
+            return find_shortest_path(agent, soil)
+    print("finding plant")
+    plants = find_biggest_plants(agent, agent.plant_size)
+    if len(plants) == 0:
+        print("finding seeds")
+        plants = find_thing(agent, Plant, v.SEEDS)
+    return find_shortest_path(agent, plants)
 
 
 def distance_from(pos, other_pos):
@@ -103,6 +121,14 @@ def find_thing(agent, item, size):
             elif item == TradingMarket:
                 items.append(a.pos)
     return items
+
+
+def find_biggest_plants(agent, size):
+    plants = find_thing(agent, Plant, size)
+    while len(plants) == 0 and size > v.SOIL:
+        size -= 1
+        plants = find_thing(agent, Plant, size)
+    return plants
 
 
 def find_best_move(agent, objs):

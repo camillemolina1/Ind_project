@@ -27,8 +27,15 @@ Soil : Brown squares
 + Download mesa (if needed)
 + Run server.py
 + A new window should appear at localhost:8521 with visuals
-
-
+  
+  
+## Stats
+  
+To see which settings I should use in terms of the number of agents, food sources, etc.. I ran the simulation a few times and noted down how long the agents were surviving. 
+From this I found that in a few cases 1 agent did manage to survive forever with plant size 2. However, generally speaking plants need to be at least of size 3 for agents to be able to survive. 
+I also found that with plant size 3, if they start with enough food for them all they will all survive and if they don't (ex: 4 agents and 6 units of food) the amount of survivors changes everytime, generally at least 1 survives but the agents tend to get in each others way which leads to the death of many of them.   
+  
+[Link to the stats](https://docs.google.com/spreadsheets/d/1qSnYWWC09E4w8XfDHmruH8CnVsvGIsqf_7_NuVMXrPo/edit#gid=0)
 
 ## Previous Papers
 

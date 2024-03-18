@@ -1,24 +1,20 @@
 # Multi-agent Cooperation Project
 
 ### Current version:  
-Agents need to eat to stay alive    
+Agents need to eat to stay alive (red agent = hungry, blue agent = full)    
   
 Agents can: 
 + move around the grid
 + eat food
 + trade food for seeds at the trading stations
-+ plant the seeds on the soil  
++ plant the seeds on the soil
+  
+Plants now take time to grow  
++ they start off as seeds and get bigger with time (4 sizes possible)   
++ you can see how "big" the plant is by the number of leaves (1 leaf = 1 unit of food for agents)
 
-  
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/2e304d0e-8925-485d-af47-f1da94f80a86)
-
-  
-#### Meanings:  
-Agents: (Red circle - hungry)  ------>  (Blue circle - fed)   
-Food: Green circle (the bigger the more food available)  
-Trading stations : Yellow Star  
-Soil : Brown squares
-  
+    
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/dd85d565-efc2-43a0-bbd9-409e48ea4d56)
   
   
 ## How to start
@@ -36,6 +32,24 @@ From this I found that in a few cases 1 agent did manage to survive forever with
 I also found that with plant size 3, if they start with enough food for them all they will all survive and if they don't (ex: 4 agents and 6 units of food) the amount of survivors changes everytime, generally at least 1 survives but the agents tend to get in each others way which leads to the death of many of them.   
   
 [Link to the stats](https://docs.google.com/spreadsheets/d/1qSnYWWC09E4w8XfDHmruH8CnVsvGIsqf_7_NuVMXrPo/edit#gid=0)
+  
+   
+## Previous versions:  
+  
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/0a0b451d-249b-4f9f-8ccb-aade23d8c92e)
+
+#### Meanings:  
+Agents: (Red circle - hungry)  ------>  (Blue circle - fed)   
+Food: Green circle (the bigger the more food available)  
+Trading stations : Yellow Star  
+Soil : Brown squares
+
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/831166e6-39fc-4623-92e0-fe199575db98)
+  
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/f47b7578-37c4-481d-b9db-ac4e7961cf49)
+  
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/a4ada01c-e829-4026-a1bc-b65bb6d20721)
+
 
 ## Previous Papers
 
@@ -47,17 +61,5 @@ I also found that with plant size 3, if they start with enough food for them all
     
   
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/9ce96e66-06f6-4330-8e6e-9b4d9eaaf264)
-
-  
-   
-## Previous versions:  
-  
-  
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/831166e6-39fc-4623-92e0-fe199575db98)
-  
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/f47b7578-37c4-481d-b9db-ac4e7961cf49)
-  
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/a4ada01c-e829-4026-a1bc-b65bb6d20721)
-
 
 

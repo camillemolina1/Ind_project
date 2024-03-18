@@ -1,6 +1,6 @@
 from plant import Plant
 from place import TradingMarket
-import values as v
+import variables as v
 
 
 # simply chooses a random move

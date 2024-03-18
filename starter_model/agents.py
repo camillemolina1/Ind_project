@@ -2,7 +2,7 @@ import mesa
 from policies import stay_close_policy, omniscient_policy, random_policy, simple_trading_policy, let_seeds_grow_policy
 from plant import Plant
 from place import TradingMarket
-import values as v
+import variables as v
 
 
 # A basic Agent that always moves randomly. If it is next to an apple it will eat it

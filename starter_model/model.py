@@ -4,7 +4,7 @@ from agents import BasicAgent, IntelligentAgent, IntelligentAgent2
 from plant import Plant
 from env import Environment
 from place import TradingMarket
-import values as v
+import variables as v
 import mesa
 
 

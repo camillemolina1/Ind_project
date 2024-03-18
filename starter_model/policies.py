@@ -1,9 +1,6 @@
 from plant import Plant
-from place import TradingMarket, Soil
-
-NOTHING = 0
-APPLE = 1
-SEEDS = 2
+from place import TradingMarket
+import variables as v
 
 
 # simply chooses a random move
@@ -22,7 +19,7 @@ def stay_close_policy(agent):
         for n in neighbourhood:
             distant_neighbours = agent.model.grid.get_cell_list_contents(n)
             for distant_neighbour in distant_neighbours:
-                if isinstance(distant_neighbour, Plant) and distant_neighbour.supply > 0:
+                if isinstance(distant_neighbour, Plant) and distant_neighbour.size > 0:
                     return m
 
     return agent.random.choice(valid_moves)
@@ -31,12 +28,12 @@ def stay_close_policy(agent):
 # knows where all apples are but not if they have a supply or not unless in immediate proximity
 # will move closer to an apple it thinks has a supply
 def omniscient_policy(agent):
-    food = find_thing(agent, Plant)
+    plant = find_thing(agent, Plant, v.PLANT)
     valid_moves = find_all_valid_moves(agent)
     best_move = [agent.pos, 100]
-    if len(valid_moves) != 0 and len(food) != 0:
+    if len(valid_moves) != 0 and len(plant) != 0:
         for m in valid_moves:
-            for f in food:
+            for f in plant:
                 d = distance_from(m, f)
                 if d < best_move[1]:
                     best_move = [m, d]
@@ -44,18 +41,20 @@ def omniscient_policy(agent):
 
 
 def trading_policy(agent):
-    if agent.has == APPLE:
+    if agent.has == v.PLANT:
         print("finding trading station")
-        goals = find_thing(agent, TradingMarket)
+        goals = find_thing(agent, TradingMarket, 0)
         return find_shortest_path(agent, goals)
-    elif agent.has == SEEDS:
+    elif agent.has == v.SEEDS:
         print("finding soil")
-        soil = find_thing(agent, Soil)
-        return find_shortest_path(agent, soil)
-    else:
-        print("finding apple")
-        food = find_thing(agent, Plant)
-        return find_shortest_path(agent, food)
+        soil = find_thing(agent, Plant, v.SOIL)
+        if len(soil) != 0:
+            return find_shortest_path(agent, soil)
+    print("finding plant/seeds")
+    plant = find_thing(agent, Plant, v.PLANT)
+    if len(plant) == 0:
+        plant = find_thing(agent, Plant, v.SEEDS)
+    return find_shortest_path(agent, plant)
 
 
 def distance_from(pos, other_pos):
@@ -91,14 +90,16 @@ def find_all_valid_moves_given_position(agent, pos):
     return moves
 
 
-def find_thing(agent, item):
+def find_thing(agent, item, size):
     items = []
     for a in agent.model.agents:
         if isinstance(a, item):
-            if item == Plant and a.supply > 0:
-                items.append(a.pos)
-            elif item == Soil and a.contains != APPLE:
-                items.append(a.pos)
+            if item == Plant:
+                if size == v.PLANT:
+                    if v.SEEDS > a.size > v.SOIL:
+                        items.append(a.pos)
+                elif size == a.size:
+                    items.append(a.pos)
             elif item == TradingMarket:
                 items.append(a.pos)
     return items
@@ -132,8 +133,10 @@ def find_shortest_path(agent, objs):
     paths = []
     moves_tried = []
     moves = find_all_valid_moves(agent)
-    random_move = agent.random.choice(moves)
+    if len(moves) == 0:
+        return agent.pos
 
+    random_move = agent.random.choice(moves)
     if len(objs) == 0:
         return random_move
 
@@ -154,7 +157,6 @@ def find_shortest_path(agent, objs):
                     moves_tried.append(m)
             neighborhood = agent.model.grid.get_neighborhood(p[len(p) - 1], moore=False, include_center=False)
             if lists_contain(neighborhood, objs):
-                print(p[0])
                 return p[0]
         paths = new_paths
     return find_best_move(agent, objs)

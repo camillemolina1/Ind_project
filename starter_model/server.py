@@ -2,16 +2,19 @@ import mesa
 import os
 from mesa_viz_tornado.modules import ChartModule
 from model import MyModel
-from agents import Food, BasicAgent, Goal, Soil
+from agents import Plant, BasicAgent, TradingMarket
 
 STAR_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/star.jpg",
-SOIL_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/soil.jpg",
-APPLE_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/apple.jpg",
-HALF_EATEN_APPLE_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/half_eaten_apple.jpg",
-EATEN_APPLE_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/eaten_apple.jpg",
+MARKET_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Market.png",
+SOIL_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Soil.png"
+SEEDS_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/seeds.png"
+PLANT1_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant1.png",
+PLANT2_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant2.png",
+PLANT3_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant3.png",
+PLANT4_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant4.png",
 
 model_params = {
-    "N": mesa.visualization.Slider(
+    "agents": mesa.visualization.Slider(
         "Number of agents",
         3,
         1,
@@ -19,21 +22,34 @@ model_params = {
         1,
         description="Choose how many agents to include in the model",
     ),
-    "F": mesa.visualization.Slider(
-        "Number of food sources",
+    "plants": mesa.visualization.Slider(
+        "Number of food sources / plants",
         2,
         1,
         5,
         1,
         description="Choose how many food sources to include in the model",
     ),
-    "S": mesa.visualization.Slider(
-        "Amount of food supply in a plant",
+    "size": mesa.visualization.Slider(
+        "Plant max size",
+        3,
+        2,
+        4,
+        1,
+        description="Choose how big the food sources are",
+    ),
+    "grow": mesa.visualization.Checkbox(
+        "Plant growth",
+        True,
+        description="Choose whether you want plants to grow",
+    ),
+    "growth_time": mesa.visualization.Slider(
+        "Plant growth time (only works if growth selected)",
         2,
         1,
         4,
         1,
-        description="Choose how big the food sources are",
+        description="Choose how long it should take for the plants to grow",
     ),
     "width": 10,
     "height": 10,
@@ -41,35 +57,40 @@ model_params = {
 
 
 def agent_portrayal(agent):
-    if isinstance(agent, Goal):
-        portrayal = {"Shape": STAR_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
-    elif isinstance(agent, Soil):
-        portrayal = {"Shape": "rect", "Color": "brown", "Filled": "true", "Layer": 0, "w": 1, "h": 1}
+    if isinstance(agent, TradingMarket):
+        portrayal = {"Shape": MARKET_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
     elif isinstance(agent, BasicAgent):
-        portrayal = {"Shape": "circle", "Color": "green", "Filled": "true", "Layer": 1, "r": 0.5}
+        portrayal = {"Shape": "circle", "Color": "blue", "Filled": "true", "Layer": 1, "r": 0.5}
         if agent.hunger <= 0:
-            portrayal["Color"] = "green"
+            portrayal["Color"] = "blue"
             portrayal["Layer"] = 0
         elif agent.hunger == 4:
             portrayal["Color"] = "grey"
             portrayal["Layer"] = 0
         else:
-            portrayal["Color"] = "blue"
+            portrayal["Color"] = "red"
             portrayal["Layer"] = 0
-    elif isinstance(agent, Food):
-        portrayal = {"Shape": "circle", "Color": "red", "Filled": "true", "Layer": 1, "r": 0.5}
-        if agent.supply == 4:
+    elif isinstance(agent, Plant):
+        portrayal = {"Shape": "circle", "Color": "green", "Filled": "true", "Layer": 1, "r": 0.5}
+        if agent.size == 5:
+            portrayal["Shape"] = SEEDS_IMG
+        elif agent.size == 4:
+            portrayal["Shape"] = PLANT4_IMG
             portrayal["r"] = "1"
-        if agent.supply == 3:
+        elif agent.size == 3:
+            portrayal["Shape"] = PLANT3_IMG
             portrayal["r"] = "0.75"
-        if agent.supply == 2:
+        elif agent.size == 2:
+            portrayal["Shape"] = PLANT2_IMG
             portrayal["r"] = "0.5"
-        if agent.supply == 1:
+        elif agent.size == 1:
+            portrayal["Shape"] = PLANT1_IMG
             portrayal["r"] = "0.25"
-        if agent.supply == 0:
+        else :
+            portrayal["Shape"] = SOIL_IMG
             portrayal["r"] = "0.0"
     else:
-        portrayal = {"Shape": "circle", "Color": "purple", "Filled": "true", "Layer": 0, "r": 1}
+        portrayal = {"Shape": "circle", "Color": "white", "Filled": "true", "Layer": 0, "r": 1}
     return portrayal
 
 
@@ -86,8 +107,6 @@ hunger_level_chart = ChartModule(
      {"Label": "Agent 5", "Color": "#ED47E3"}], data_collector_name="hunger_levels"
 )
 
-count_chart.canvas_y_max = 300
-hunger_level_chart.canvas_y_max = 300
 
 server = mesa.visualization.ModularServer(
     MyModel, [grid, hunger_level_chart, count_chart], "Hungry Agents Model", model_params

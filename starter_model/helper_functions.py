@@ -130,7 +130,7 @@ def find_shortest_path(agent, objs):
                     moves_tried.append(m)
             neighborhood = agent.model.grid.get_neighborhood(p[len(p) - 1], moore=False, include_center=False)
             if lists_contain(neighborhood, objs):
-                return p[0]
+                return p
         paths = new_paths
-    return find_best_move(agent, objs)
+    return [find_best_move(agent, objs)]
 

@@ -35,7 +35,7 @@ class Plant(mesa.Agent):
                 self.size = self.max_size
         return
 
-    def eat(self):
+    def take(self):
         self.size -= 1
         self.time = 0
 

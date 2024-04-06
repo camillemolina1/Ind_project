@@ -43,31 +43,53 @@ def omniscient_policy(agent):
 
 # this policy allows agent to trade plants for seeds
 def simple_trading_policy(agent):
+    # check if previous path still works
+    if len(agent.path) != 0:
+        if h.check_if_valid_move(agent, agent.path[0]):
+            return agent.path[0]
+        else:
+            agent.path = []
+    # if agent has plant find a market
     if agent.has == v.PLANT:
         goals = h.find_thing(agent, TradingMarket, 0)
-        return h.find_shortest_path(agent, goals)
+        agent.path = h.find_shortest_path(agent, goals)
+        return agent.path[0]
+    # if agent has seeds find soil
     elif agent.has == v.SEEDS:
         soil = h.find_thing(agent, Plant, v.SOIL)
         if len(soil) != 0:
-            return h.find_shortest_path(agent, soil)
+            agent.path = h.find_shortest_path(agent, soil)
+            return agent.path[0]
+    # find a plant
     plant = h.find_any_plant(agent)
     if len(plant) == 0:
         plant = h.find_thing(agent, Plant, v.SEEDS)
-    return h.find_shortest_path(agent, plant)
+    agent.path = h.find_shortest_path(agent, plant)
+    return agent.path[0]
 
 
 # building on previous policy this one tries to leave the smaller plants a chance to grow
 def let_seeds_grow_policy(agent):
+    # check if previous path still works
+    if len(agent.path) != 0:
+        if h.check_if_valid_move(agent, agent.path[0]):
+            return agent.path[0]
+        else:
+            agent.path = []
     if agent.has == v.PLANT:
         markets = h.find_thing(agent, TradingMarket, 0)
-        return h.find_shortest_path(agent, markets)
+        agent.path = h.find_shortest_path(agent, markets)
+        return agent.path[0]
     elif agent.has == v.SEEDS:
         soil = h.find_thing(agent, Plant, v.SOIL)
         if len(soil) != 0:
-            return h.find_shortest_path(agent, soil)
+            agent.path = h.find_shortest_path(agent, soil)
+            return agent.path[0]
+    # find the biggest available plant
     plants = h.find_biggest_plants(agent, agent.plant_size)
     if len(plants) == 0:
         plants = h.find_thing(agent, Plant, v.SEEDS)
-    return h.find_shortest_path(agent, plants)
+    agent.path = h.find_shortest_path(agent, plants)
+    return agent.path[0]
 
 

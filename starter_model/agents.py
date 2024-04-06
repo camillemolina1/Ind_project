@@ -1,7 +1,7 @@
 import mesa
-from policies import stay_close_policy, omniscient_policy, random_policy, simple_trading_policy, let_seeds_grow_policy
+import policies as p
 from plant import Plant
-from place import TradingMarket
+from market import TradingMarket
 import variables as v
 
 
@@ -34,34 +34,27 @@ class BasicAgent(mesa.Agent):
                     return neighbour
 
     def eat(self, plant):
-        plant.size -= 1
+        plant.eat()
         self.hunger -= 1
 
     def move(self):
-        new_position = random_policy(self)
+        new_position = p.random_policy(self)
         self.model.grid.move_agent(self, new_position)
 
 
 # This agent once it has found an apple will stay near if it still not fully eaten
 class StayCloseAgent(BasicAgent):
 
-    def __init__(self, unique_id, model):
-        super().__init__(unique_id, model)
-        self.hunger = 0
-
     def move(self):
-        new_position = stay_close_policy(self)
+        new_position = p.stay_close_policy(self)
         self.model.grid.move_agent(self, new_position)
 
 
 # This agent knows where the apples are and goes strait to them
-class OmnicientAgent(BasicAgent):
-    def __init__(self, unique_id, model):
-        super().__init__(unique_id, model)
-        self.hunger = 0
+class OmniscientAgent(BasicAgent):
 
     def move(self):
-        new_position = omniscient_policy(self)
+        new_position = p.omniscient_policy(self)
         self.model.grid.move_agent(self, new_position)
 
     def step(self):
@@ -72,7 +65,8 @@ class OmnicientAgent(BasicAgent):
         self.hunger += 0.1
 
 
-class IntelligentAgent(OmnicientAgent):
+# this agent can collect food and trade it for seeds to grow more plants
+class TradingAgent(OmniscientAgent):
     def __init__(self, unique_id, plant_size, plant_params, model):
         super().__init__(unique_id, model)
         self.hunger = 0
@@ -82,7 +76,7 @@ class IntelligentAgent(OmnicientAgent):
         self.plant_params = plant_params
 
     def move(self):
-        new_position = simple_trading_policy(self)
+        new_position = p.simple_trading_policy(self)
         self.model.grid.move_agent(self, new_position)
 
     def step(self):
@@ -106,12 +100,11 @@ class IntelligentAgent(OmnicientAgent):
         if market and self.has == v.PLANT:
             self.trade()
             return
-
         self.move()
         self.hunger += 0.1
 
     def take_food(self, plant):
-        plant.size -= 1
+        plant.eat()
         self.has = v.BABY_PLANT
 
     def trade(self):
@@ -135,7 +128,7 @@ class IntelligentAgent(OmnicientAgent):
         return False
 
 
-class IntelligentAgent2(IntelligentAgent):
+class HumanitarianAgent(TradingAgent):
     def __init__(self, unique_id, plant_size, plant_params, model):
         super().__init__(unique_id, plant_size, plant_params, model)
         self.hunger = 0
@@ -145,6 +138,45 @@ class IntelligentAgent2(IntelligentAgent):
         self.hunger_limit = 1.5
 
     def move(self):
-        new_position = let_seeds_grow_policy(self)
+        new_position = p.let_seeds_grow_policy(self)
         self.model.grid.move_agent(self, new_position)
+
+    def step(self):
+        plant = self.check_if_near(Plant, v.PLANT)
+        soil = self.check_if_near(Plant, v.SOIL)
+        market = self.check_if_near(TradingMarket, 0)
+
+        if plant and v.SOIL < plant.size < v.SEEDS:
+            if self.hunger > self.hunger_limit:
+                self.eat(plant)
+                return
+            elif self.has == v.SOIL and plant.size > v.BABY_PLANT:
+                self.take_food(plant)
+                return
+        if soil and self.has == v.SEEDS:
+            if self.check_if_empty(soil.pos):
+                self.plant(soil.pos)
+                soil.contains = v.PLANT
+                return
+        # agent trades apple for seeds
+        if market and self.has == v.PLANT:
+            self.trade()
+            return
+        self.move()
+        self.hunger += 0.1
+
+
+class SelfishAgent(TradingAgent):
+    def __init__(self, unique_id, plant_size, plant_params, model):
+        super().__init__(unique_id, plant_size, plant_params, model)
+        self.hunger = 0
+        self.has = v.SOIL
+        self.plant_size = plant_size
+        self.plant_params = plant_params
+        self.hunger_limit = 0
+
+    def move(self):
+        new_position = p.simple_trading_policy(self)
+        self.model.grid.move_agent(self, new_position)
+
 

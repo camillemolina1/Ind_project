@@ -1,20 +1,20 @@
 from mesa import DataCollector
 
-from agents import BasicAgent, IntelligentAgent, IntelligentAgent2
+from agents import BasicAgent, TradingAgent, SelfishAgent, HumanitarianAgent
 from plant import Plant
 from env import Environment
-from place import TradingMarket
+from market import TradingMarket
 import variables as v
 import mesa
 
 
 class MyModel(mesa.Model):
     """A model with some number of agents."""
-    def __init__(self, agents, plants, size, grow, growth_time, width, height):
+    def __init__(self, humanitarian_agents, selfish_agents, plants, size, growth_time, width, height):
         super().__init__()
-        self.num_agents = agents
+        self.num_agents = [humanitarian_agents, selfish_agents]
         self.amount_of_food = plants
-        self.plant_params = [grow, size, growth_time]
+        self.plant_params = [size, growth_time]
         self.soil = [(width - 3, height - 4), (height - 1, width - 1), (width - 3, height - 9), (height - 6, width - 1)]
 
         self.grid = Environment(width, height)
@@ -42,14 +42,16 @@ class MyModel(mesa.Model):
         # place trading markets
         g = TradingMarket(1000, (0, 1), self)
         self.grid.place_agent(g, (0, 1))
+        self.schedule.add(g)
         g = TradingMarket(1001, (0, width - 2), self)
         self.grid.place_agent(g, (0, width - 2))
         self.schedule.add(g)
 
+        tot_agents = self.num_agents[0] + self.num_agents[1]
         # place plants
-        for j in range(self.num_agents, self.amount_of_food + self.num_agents):
+        for j in range(tot_agents, self.amount_of_food + tot_agents):
             x, y = self.find_valid_plant_location()
-            b = Plant(j, (x, y), self.plant_params[1], self.plant_params, self)
+            b = Plant(j, (x, y), self.plant_params[0], self.plant_params, self)
             self.schedule.add(b)
             self.grid.place_agent(b, (x, y))
 
@@ -63,10 +65,14 @@ class MyModel(mesa.Model):
                         self.schedule.add(s)
 
         # Create agents
-        for i in range(self.num_agents):
-            a = IntelligentAgent2(i, self.plant_params[0], self.plant_params[0], self)
+        for i in range(self.num_agents[0]):
+            a = HumanitarianAgent(i, self.plant_params[0], self.plant_params, self)
             self.schedule.add(a)
-            # Add the agent to a random grid cell
+            x, y = self.find_valid_agent_location()
+            self.grid.place_agent(a, (x, y))
+        for i in range(self.num_agents[1]):
+            a = SelfishAgent(self.num_agents[0] + i, self.plant_params[0], self.plant_params, self)
+            self.schedule.add(a)
             x, y = self.find_valid_agent_location()
             self.grid.place_agent(a, (x, y))
 
@@ -93,6 +99,11 @@ class MyModel(mesa.Model):
                     count += 1
         return count
 
+    def get_hunger(self, agent_id):
+        for agent in self.schedule.agents:
+            if agent.unique_id == agent_id and isinstance(agent, BasicAgent):
+                return agent.hunger
+
     def find_valid_agent_location(self):
         x = self.random.randrange(self.grid.width)
         y = self.random.randrange(self.grid.height)
@@ -110,11 +121,6 @@ class MyModel(mesa.Model):
             x = self.random.randrange(self.soil[i*2][0], self.soil[i*2+1][1])
             y = self.random.randrange(self.soil[i*2][1], self.soil[i*2+1][0])
         return x, y
-
-    def get_hunger(self, agent_id):
-        for agent in self.schedule.agents:
-            if agent.unique_id == agent_id and isinstance(agent, BasicAgent):
-                return agent.hunger
 
 
 

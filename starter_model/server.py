@@ -2,10 +2,10 @@ import mesa
 import os
 from mesa_viz_tornado.modules import ChartModule
 from model import MyModel
-from agents import Plant, BasicAgent, TradingMarket
+from agents import Plant, BasicAgent, TradingMarket, SelfishAgent
 
 STAR_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/star.jpg",
-MARKET_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Market.png",
+MARKET_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Market2.png",
 SOIL_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Soil.png"
 SEEDS_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/seeds.png"
 PLANT1_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant1.png",
@@ -14,13 +14,21 @@ PLANT3_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant3.png
 PLANT4_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant4.png",
 
 model_params = {
-    "agents": mesa.visualization.Slider(
-        "Number of agents",
-        3,
-        1,
+    "humanitarian_agents": mesa.visualization.Slider(
+        "Number of humanitarian agents",
+        2,
+        0,
         5,
         1,
-        description="Choose how many agents to include in the model",
+        description="Choose how many humanitarian agents to include in the model",
+    ),
+    "selfish_agents": mesa.visualization.Slider(
+        "Number of selfish agents",
+        1,
+        0,
+        5,
+        1,
+        description="Choose how many selfish agents to include in the model",
     ),
     "plants": mesa.visualization.Slider(
         "Number of food sources / plants",
@@ -33,18 +41,13 @@ model_params = {
     "size": mesa.visualization.Slider(
         "Plant max size",
         3,
-        2,
+        3,
         4,
         1,
         description="Choose how big the food sources are",
     ),
-    "grow": mesa.visualization.Checkbox(
-        "Plant growth",
-        True,
-        description="Choose whether you want plants to grow",
-    ),
     "growth_time": mesa.visualization.Slider(
-        "Plant growth time (only works if growth selected)",
+        "Plant growth time",
         2,
         1,
         4,
@@ -61,11 +64,10 @@ def agent_portrayal(agent):
         portrayal = {"Shape": MARKET_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
     elif isinstance(agent, BasicAgent):
         portrayal = {"Shape": "circle", "Color": "blue", "Filled": "true", "Layer": 1, "r": 0.5}
+        if isinstance(agent, SelfishAgent):
+            portrayal = {"Shape": "rect", "Color": "blue", "Filled": "true", "Layer": 1, "w": 0.5, "h": 0.5}
         if agent.hunger <= 0:
             portrayal["Color"] = "blue"
-            portrayal["Layer"] = 0
-        elif agent.hunger == 4:
-            portrayal["Color"] = "grey"
             portrayal["Layer"] = 0
         else:
             portrayal["Color"] = "red"
@@ -86,7 +88,7 @@ def agent_portrayal(agent):
         elif agent.size == 1:
             portrayal["Shape"] = PLANT1_IMG
             portrayal["r"] = "0.25"
-        else :
+        else:
             portrayal["Shape"] = SOIL_IMG
             portrayal["r"] = "0.0"
     else:

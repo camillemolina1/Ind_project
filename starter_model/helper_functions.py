@@ -1,4 +1,4 @@
-from agents import Plant, TradingMarket
+from model import Plant, TradingMarket
 import variables as v
 
 
@@ -107,18 +107,18 @@ def find_shortest_path(agent, objs):
     moves_tried = []
     moves = find_all_valid_moves(agent)
     if len(moves) == 0:
-        return agent.pos
+        return [agent.pos]
 
     random_move = agent.random.choice(moves)
     if len(objs) == 0:
-        return random_move
+        return [random_move]
 
     for m in moves:
         paths.append([m])
         moves_tried.append(m)
         neighborhood = agent.model.grid.get_neighborhood(m, moore=False, include_center=False)
         if lists_contain(neighborhood, objs):
-            return m
+            return [m]
 
     while len(paths) != 0:
         new_paths = []

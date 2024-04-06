@@ -1,19 +1,11 @@
 import mesa
-import os
 from mesa_viz_tornado.modules import ChartModule
-from model import MyModel
-from agents import Plant, BasicAgent, TradingMarket, SelfishAgent
+import variables as v
+import agents as a
+from model import MyModel, Plant, TradingMarket
 
-STAR_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/star.jpg",
-MARKET_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Market2.png",
-SOIL_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Soil.png"
-SEEDS_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/seeds.png"
-PLANT1_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant1.png",
-PLANT2_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant2.png",
-PLANT3_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant3.png",
-PLANT4_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/Plant4.png",
 
-model_params = {
+MODEL_PARAMS = {
     "humanitarian_agents": mesa.visualization.Slider(
         "Number of humanitarian agents",
         2,
@@ -61,10 +53,10 @@ model_params = {
 
 def agent_portrayal(agent):
     if isinstance(agent, TradingMarket):
-        portrayal = {"Shape": MARKET_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
-    elif isinstance(agent, BasicAgent):
+        portrayal = {"Shape": v.MARKET_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
+    elif isinstance(agent, a.BasicAgent):
         portrayal = {"Shape": "circle", "Color": "blue", "Filled": "true", "Layer": 1, "r": 0.5}
-        if isinstance(agent, SelfishAgent):
+        if isinstance(agent, a.SelfishAgent):
             portrayal = {"Shape": "rect", "Color": "blue", "Filled": "true", "Layer": 1, "w": 0.5, "h": 0.5}
         if agent.hunger <= 0:
             portrayal["Color"] = "blue"
@@ -75,22 +67,24 @@ def agent_portrayal(agent):
     elif isinstance(agent, Plant):
         portrayal = {"Shape": "circle", "Color": "green", "Filled": "true", "Layer": 1, "r": 0.5}
         if agent.size == 5:
-            portrayal["Shape"] = SEEDS_IMG
+            portrayal["Shape"] = v.SEEDS_IMG
+            portrayal["r"] = "0.1"
         elif agent.size == 4:
-            portrayal["Shape"] = PLANT4_IMG
+            portrayal["Shape"] = v.PLANT4_IMG
             portrayal["r"] = "1"
         elif agent.size == 3:
-            portrayal["Shape"] = PLANT3_IMG
+            portrayal["Shape"] = v.PLANT3_IMG
             portrayal["r"] = "0.75"
         elif agent.size == 2:
-            portrayal["Shape"] = PLANT2_IMG
+            portrayal["Shape"] = v.PLANT2_IMG
             portrayal["r"] = "0.5"
         elif agent.size == 1:
-            portrayal["Shape"] = PLANT1_IMG
+            portrayal["Shape"] = v.PLANT1_IMG
             portrayal["r"] = "0.25"
         else:
-            portrayal["Shape"] = SOIL_IMG
-            portrayal["r"] = "0.0"
+            portrayal["Shape"] = v.SOIL_IMG
+            portrayal["r"] = "1"
+            portrayal["Color"] = "Brown"
     else:
         portrayal = {"Shape": "circle", "Color": "white", "Filled": "true", "Layer": 0, "r": 1}
     return portrayal
@@ -111,7 +105,7 @@ hunger_level_chart = ChartModule(
 
 
 server = mesa.visualization.ModularServer(
-    MyModel, [grid, hunger_level_chart, count_chart], "Hungry Agents Model", model_params
+    MyModel, [grid, hunger_level_chart, count_chart], "Hungry Agents Model", MODEL_PARAMS
 )
 
 server.port = 8521  # default

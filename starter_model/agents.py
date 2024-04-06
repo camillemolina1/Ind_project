@@ -1,8 +1,7 @@
 import mesa
 import policies as p
 import variables as v
-from market import TradingMarket
-from plant import Plant
+from model import TradingMarket, Plant
 
 
 # A basic Agent that always moves randomly. If it is next to an apple it will eat it

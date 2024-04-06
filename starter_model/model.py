@@ -66,12 +66,12 @@ class MyModel(mesa.Model):
 
         # Create agents
         for i in range(self.num_agents[0]):
-            ag = a.CooperativeAgent(i, self.plant_params[0], self.plant_params, self)
+            ag = a.CooperativeAgent(i, self)
             self.schedule.add(ag)
             x, y = self.find_valid_agent_location()
             self.grid.place_agent(ag, (x, y))
         for i in range(self.num_agents[1]):
-            ag = a.SelfishAgent(self.num_agents[0] + i, self.plant_params[0], self.plant_params, self)
+            ag = a.SelfishAgent(self.num_agents[0] + i, self)
             self.schedule.add(ag)
             x, y = self.find_valid_agent_location()
             self.grid.place_agent(ag, (x, y))

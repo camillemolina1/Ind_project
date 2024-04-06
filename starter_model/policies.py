@@ -1,5 +1,4 @@
-from plant import Plant
-from market import TradingMarket
+from model import Plant, TradingMarket
 import variables as v
 import helper_functions as h
 

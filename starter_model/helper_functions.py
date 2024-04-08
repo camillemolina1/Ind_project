@@ -86,6 +86,14 @@ def find_biggest_plants(agent, size):
     return plants
 
 
+def find_hungriest_agent(agent):
+    hungriest_agent = agent
+    for a in agent.model.agents:
+        if a.hunger > hungriest_agent.hunger:
+            hungriest_agent = a
+    return hungriest_agent
+
+
 def find_best_move(agent, objs):
     valid_moves = find_all_valid_moves(agent)
     best_move = [agent.pos, 100]
@@ -140,5 +148,5 @@ def find_shortest_path(agent, objs):
             if lists_contain(neighborhood, objs):
                 return p
         paths = new_paths
-    return [find_best_move(agent, objs)]
+    return []
 

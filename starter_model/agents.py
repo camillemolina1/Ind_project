@@ -182,7 +182,7 @@ class AltruisticAgent(TradingAgent):
         self.hunger_limit = 3
 
     def move(self):
-        new_position = p.simple_trading_policy(self)
+        new_position = p.altruistic_policy(self)
         self.grid.move_agent(self, new_position)
 
     def step(self):
@@ -191,6 +191,7 @@ class AltruisticAgent(TradingAgent):
         market = self.check_if_near(TradingMarket, 0)
         agents = self.check_if_near_agents(TradingAgent)
 
+        print(self.unique_id, ": I am hungry: ", self.hunger)
         if self.has == v.PLANT and self.hunger > self.hunger_limit:
             self.eat_stored()
             return
@@ -222,7 +223,7 @@ class CooperativeAgent(TradingAgent):
         self.hunger_limit = 1.5
 
     def move(self):
-        new_position = p.simple_trading_policy(self)
+        new_position = p.let_seeds_grow_policy(self)
         self.grid.move_agent(self, new_position)
 
     def step(self):
@@ -230,6 +231,10 @@ class CooperativeAgent(TradingAgent):
         soil = self.check_if_near(Plant, v.SOIL)
         market = self.check_if_near(TradingMarket, 0)
 
+        print(self.unique_id, ": I am hungry: ", self.hunger)
+        if self.has == v.PLANT and self.hunger > 3.5:
+            self.eat_stored()
+            return
         if plant and v.SOIL < plant.size < v.SEEDS:
             if self.has == v.NOTHING:
                 self.take_food(plant)
@@ -265,6 +270,7 @@ class SelfishAgent(TradingAgent):
         soil = self.check_if_near(Plant, v.SOIL)
         market = self.check_if_near(TradingMarket, 0)
 
+        print(self.unique_id, ": I am hungry: ", self.hunger)
         if self.has == v.PLANT and self.hunger > 3.5:
             self.eat_stored()
             return
@@ -299,7 +305,7 @@ class SpitefulAgent(TradingAgent):
         super().__init__(unique_id, model)
 
     def move(self):
-        new_position = p.simple_trading_policy(self)
+        new_position = p.competitive_policy(self)
         self.grid.move_agent(self, new_position)
 
     def step(self):
@@ -308,6 +314,7 @@ class SpitefulAgent(TradingAgent):
         market = self.check_if_near(TradingMarket, 0)
         agents = self.check_if_near_agents(TradingAgent)
 
+        print(self.unique_id, ": I am hungry: ", self.hunger)
         if self.has == v.PLANT and self.hunger > 3.5:
             self.eat_stored()
             return
@@ -348,7 +355,7 @@ class SadisticAgent(TradingAgent):
         super().__init__(unique_id, model)
 
     def move(self):
-        new_position = p.simple_trading_policy(self)
+        new_position = p.sadistic_policy(self)
         self.grid.move_agent(self, new_position)
 
     def step(self):

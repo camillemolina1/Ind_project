@@ -1,7 +1,12 @@
+import random
 import mesa
 import policies as p
 import variables as v
+import helper_functions as h
 from model import TradingMarket, Plant
+
+
+# ---------------------------- Here are different agents based on functionality ----------------------------------- #
 
 
 # A basic Agent that always moves randomly. If it is next to an apple it will eat it
@@ -30,7 +35,7 @@ class BasicAgent(mesa.Agent):
         self.grid.move_agent(self, new_position)
 
     def check_if_near(self, obj, size):
-        # check if food nearby
+        # check if obj nearby
         neighborhood = self.grid.get_neighborhood(self.pos, moore=False, include_center=False)
         neighbors = self.grid.get_cell_list_contents(neighborhood)
         for neighbour in neighbors:
@@ -40,6 +45,16 @@ class BasicAgent(mesa.Agent):
                         return neighbour
                 else:
                     return neighbour
+
+    def check_if_near_agents(self, obj):
+        agents = []
+        # check if agent nearby
+        neighborhood = self.grid.get_neighborhood(self.pos, moore=False, include_center=False)
+        neighbors = self.grid.get_cell_list_contents(neighborhood)
+        for neighbour in neighbors:
+            if isinstance(neighbour, obj):
+                agents.append(neighbour)
+        return agents
 
     def check_if_empty(self, pos):
         contents = self.grid.get_cell_list_contents(pos)
@@ -82,7 +97,7 @@ class OmniscientAgent(BasicAgent):
         self.hunger += 0.1
 
 
-# this agent can collect food and trade it for seeds to grow more plants
+# this agent can collect food, give it away, trade it for seeds to grow more plants and push agents
 class TradingAgent(OmniscientAgent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
@@ -158,11 +173,13 @@ class TradingAgent(OmniscientAgent):
 
 
 # ------------------------------------ Here are our 5 types of agents ------------------------------------------ #
+# -------------------------------------- based on social orientation ------------------------------------------- #
 
 # Agent prioritises helping others (for now everyone but later on greenbeards or kin) so will bring the hungriest food
 class AltruisticAgent(TradingAgent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
+        self.hunger_limit = 3
 
     def move(self):
         new_position = p.simple_trading_policy(self)
@@ -172,12 +189,17 @@ class AltruisticAgent(TradingAgent):
         plant = self.check_if_near(Plant, v.PLANT)
         soil = self.check_if_near(Plant, v.SOIL)
         market = self.check_if_near(TradingMarket, 0)
+        agents = self.check_if_near_agents(TradingAgent)
 
-        if plant and v.SOIL < plant.size < v.SEEDS:
-            if self.hunger > self.hunger_limit:
-                self.eat(plant)
+        if self.has == v.PLANT and self.hunger > self.hunger_limit:
+            self.eat_stored()
+            return
+        for a in agents:
+            if self.has == v.PLANT and a.hunger > self.hunger:
+                self.give(a)
                 return
-            elif self.has == v.SOIL:
+        if plant and v.SOIL < plant.size < v.SEEDS:
+            if self.has == v.NOTHING:
                 self.take_food(plant)
                 return
         if soil and self.has == v.SEEDS:
@@ -197,6 +219,7 @@ class AltruisticAgent(TradingAgent):
 class CooperativeAgent(TradingAgent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
+        self.hunger_limit = 1.5
 
     def move(self):
         new_position = p.simple_trading_policy(self)
@@ -208,12 +231,13 @@ class CooperativeAgent(TradingAgent):
         market = self.check_if_near(TradingMarket, 0)
 
         if plant and v.SOIL < plant.size < v.SEEDS:
-            if self.hunger > self.hunger_limit:
-                self.eat(plant)
-                return
-            elif self.has == v.SOIL:
+            if self.has == v.NOTHING:
                 self.take_food(plant)
                 return
+            elif self.hunger > self.hunger_limit:
+                self.eat(plant)
+                return
+        # agent plants seeds
         if soil and self.has == v.SEEDS:
             if self.check_if_empty(soil.pos):
                 self.plant(soil.pos)
@@ -241,13 +265,21 @@ class SelfishAgent(TradingAgent):
         soil = self.check_if_near(Plant, v.SOIL)
         market = self.check_if_near(TradingMarket, 0)
 
+        if self.has == v.PLANT and self.hunger > 3.5:
+            self.eat_stored()
+            return
         if plant and v.SOIL < plant.size < v.SEEDS:
-            if self.hunger > self.hunger_limit:
+            if self.hunger > 3.5:
                 self.eat(plant)
                 return
-            elif self.has == v.SOIL:
-                self.take_food(plant)
-                return
+            else:
+                if self.has == v.NOTHING:
+                    self.take_food(plant)
+                    return
+                elif self.hunger > -1:
+                    self.eat(plant)
+                    return
+        # agent plants seeds
         if soil and self.has == v.SEEDS:
             if self.check_if_empty(soil.pos):
                 self.plant(soil.pos)
@@ -274,14 +306,23 @@ class SpitefulAgent(TradingAgent):
         plant = self.check_if_near(Plant, v.PLANT)
         soil = self.check_if_near(Plant, v.SOIL)
         market = self.check_if_near(TradingMarket, 0)
+        agents = self.check_if_near_agents(TradingAgent)
 
+        if self.has == v.PLANT and self.hunger > 3.5:
+            self.eat_stored()
+            return
         if plant and v.SOIL < plant.size < v.SEEDS:
-            if self.hunger > self.hunger_limit:
+            if self.hunger > 3.5:
                 self.eat(plant)
                 return
-            elif self.has == v.SOIL:
-                self.take_food(plant)
-                return
+            else:
+                if self.has == v.NOTHING:
+                    self.take_food(plant)
+                    return
+                elif self.hunger > -1:
+                    self.eat(plant)
+                    return
+        # agent plants seeds
         if soil and self.has == v.SEEDS:
             if self.check_if_empty(soil.pos):
                 self.plant(soil.pos)
@@ -291,6 +332,12 @@ class SpitefulAgent(TradingAgent):
         if market and self.has == v.PLANT:
             self.trade()
             return
+        # is an agent is in the way this agent will push it away
+        if agents and self.hunger < 3.5:
+            for a in agents:
+                if h.is_agent_in_the_way(a):
+                    self.push(a)
+                    return
         self.move()
         self.hunger += 0.1
 
@@ -306,24 +353,25 @@ class SadisticAgent(TradingAgent):
 
     def step(self):
         plant = self.check_if_near(Plant, v.PLANT)
-        soil = self.check_if_near(Plant, v.SOIL)
-        market = self.check_if_near(TradingMarket, 0)
+        agent = self.check_if_near(TradingAgent, 0)
 
+        if self.has == v.PLANT and self.hunger > 3.5:
+            self.eat_stored()
+            return
         if plant and v.SOIL < plant.size < v.SEEDS:
-            if self.hunger > self.hunger_limit:
+            if self.hunger > 3.5:
                 self.eat(plant)
                 return
-            elif self.has == v.SOIL:
-                self.take_food(plant)
-                return
-        if soil and self.has == v.SEEDS:
-            if self.check_if_empty(soil.pos):
-                self.plant(soil.pos)
-                soil.contains = v.PLANT
-                return
-        # agent trades apple for seeds
-        if market and self.has == v.PLANT:
-            self.trade()
+            else:
+                if self.has == v.NOTHING:
+                    self.take_food(plant)
+                    return
+                elif self.hunger > -1:
+                    self.eat(plant)
+                    return
+        # is an agent is in the way this agent will push it away
+        if agent:
+            self.push(agent)
             return
         self.move()
         self.hunger += 0.1

@@ -6,13 +6,21 @@ from model import MyModel, Plant, TradingMarket
 
 
 MODEL_PARAMS = {
-    "humanitarian_agents": mesa.visualization.Slider(
-        "Number of humanitarian agents",
-        2,
+    "altruistic_agents": mesa.visualization.Slider(
+        "Number of altruistic agents",
+        0,
         0,
         5,
         1,
-        description="Choose how many humanitarian agents to include in the model",
+        description="Choose how many altruistic agents to include in the model",
+    ),
+    "cooperative_agents": mesa.visualization.Slider(
+        "Number of cooperative agents",
+        1,
+        0,
+        5,
+        1,
+        description="Choose how many cooperative agents to include in the model",
     ),
     "selfish_agents": mesa.visualization.Slider(
         "Number of selfish agents",
@@ -22,6 +30,22 @@ MODEL_PARAMS = {
         1,
         description="Choose how many selfish agents to include in the model",
     ),
+    "competitive_agents": mesa.visualization.Slider(
+        "Number of competitive agents",
+        1,
+        0,
+        5,
+        1,
+        description="Choose how many competitive agents to include in the model",
+    ),
+    "sadistic_agents": mesa.visualization.Slider(
+        "Number of sadistic agents",
+        0,
+        0,
+        5,
+        1,
+        description="Choose how many sadistic agents to include in the model",
+    ),
     "plants": mesa.visualization.Slider(
         "Number of food sources / plants",
         2,
@@ -29,22 +53,6 @@ MODEL_PARAMS = {
         5,
         1,
         description="Choose how many food sources to include in the model",
-    ),
-    "size": mesa.visualization.Slider(
-        "Plant max size",
-        3,
-        3,
-        4,
-        1,
-        description="Choose how big the food sources are",
-    ),
-    "growth_time": mesa.visualization.Slider(
-        "Plant growth time",
-        2,
-        1,
-        4,
-        1,
-        description="Choose how long it should take for the plants to grow",
     ),
     "width": 10,
     "height": 10,
@@ -56,14 +64,16 @@ def agent_portrayal(agent):
         portrayal = {"Shape": v.MARKET_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
     elif isinstance(agent, a.BasicAgent):
         portrayal = {"Shape": "circle", "Color": "blue", "Filled": "true", "Layer": 1, "r": 0.5}
-        if isinstance(agent, a.SelfishAgent):
-            portrayal = {"Shape": "rect", "Color": "blue", "Filled": "true", "Layer": 1, "w": 0.5, "h": 0.5}
-        if agent.hunger <= 0:
+        if isinstance(agent, a.AltruisticAgent):
             portrayal["Color"] = "blue"
-            portrayal["Layer"] = 0
-        else:
+        elif isinstance(agent, a.CooperativeAgent):
+            portrayal["Color"] = "green"
+        elif isinstance(agent, a.SelfishAgent):
+            portrayal["Color"] = "yellow"
+        elif isinstance(agent, a.SpitefulAgent):
+            portrayal["Color"] = "orange"
+        elif isinstance(agent, a.SadisticAgent):
             portrayal["Color"] = "red"
-            portrayal["Layer"] = 0
     elif isinstance(agent, Plant):
         portrayal = {"Shape": "circle", "Color": "green", "Filled": "true", "Layer": 1, "r": 0.5}
         if agent.size == 5:

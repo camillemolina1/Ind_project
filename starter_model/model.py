@@ -9,12 +9,12 @@ import mesa
 
 
 class MyModel(mesa.Model):
-    """A model with some number of agents."""
-    def __init__(self, humanitarian_agents, selfish_agents, plants, size, growth_time, width, height):
+    def __init__(self, altruistic_agents, cooperative_agents, selfish_agents, competitive_agents, sadistic_agents,
+                 plants, width, height):
         super().__init__()
-        self.num_agents = [humanitarian_agents, selfish_agents]
+        self.num_agents = [altruistic_agents, cooperative_agents, selfish_agents, competitive_agents, sadistic_agents]
         self.amount_of_food = plants
-        self.plant_params = [size, growth_time]
+        self.plant_params = [v.SIZE, v.GROWTH_TIME]
         self.soil = [(width - 3, height - 4), (height - 1, width - 1), (width - 3, height - 9), (height - 6, width - 1)]
 
         self.grid = Environment(width, height)
@@ -39,17 +39,9 @@ class MyModel(mesa.Model):
             }
         )
 
-        # place trading markets
-        g = TradingMarket(1000, (0, 1), self)
-        self.grid.place_agent(g, (0, 1))
-        self.schedule.add(g)
-        g = TradingMarket(1001, (0, width - 2), self)
-        self.grid.place_agent(g, (0, width - 2))
-        self.schedule.add(g)
-
-        tot_agents = self.num_agents[0] + self.num_agents[1]
+        tot_agents = self.num_agents[0] + self.num_agents[1] + self.num_agents[2] + self.num_agents[3] + self.num_agents[4]
         # place plants
-        for j in range(tot_agents, self.amount_of_food + tot_agents):
+        for j in range(tot_agents, tot_agents + self.amount_of_food):
             x, y = self.find_valid_plant_location()
             b = Plant(j, (x, y), self.plant_params[0], self.plant_params, self)
             self.schedule.add(b)
@@ -64,17 +56,34 @@ class MyModel(mesa.Model):
                         self.grid.place_agent(s, (m, n))
                         self.schedule.add(s)
 
+        # place trading markets
+        g = TradingMarket(self.next_id(), (0, 1), self)
+        self.grid.place_agent(g, (0, 1))
+        self.schedule.add(g)
+        g = TradingMarket(self.next_id(), (0, width - 2), self)
+        self.grid.place_agent(g, (0, width - 2))
+        self.schedule.add(g)
+
         # Create agents
         for i in range(self.num_agents[0]):
-            ag = a.CooperativeAgent(i, self)
-            self.schedule.add(ag)
-            x, y = self.find_valid_agent_location()
-            self.grid.place_agent(ag, (x, y))
+            ag = a.AltruisticAgent(i, self)
+            self.add_agent(ag)
+        t = self.num_agents[0]
         for i in range(self.num_agents[1]):
-            ag = a.SelfishAgent(self.num_agents[0] + i, self)
-            self.schedule.add(ag)
-            x, y = self.find_valid_agent_location()
-            self.grid.place_agent(ag, (x, y))
+            ag = a.CooperativeAgent(t + i, self)
+            self.add_agent(ag)
+        t += self.num_agents[1]
+        for i in range(self.num_agents[2]):
+            ag = a.SelfishAgent(t + i, self)
+            self.add_agent(ag)
+        t += self.num_agents[2]
+        for i in range(self.num_agents[3]):
+            ag = a.SpitefulAgent(t + i, self)
+            self.add_agent(ag)
+        t += self.num_agents[3]
+        for i in range(self.num_agents[4]):
+            ag = a.SadisticAgent(t + i, self)
+            self.add_agent(ag)
 
     def step(self):
         self.schedule.step()
@@ -87,6 +96,11 @@ class MyModel(mesa.Model):
             if isinstance(agent, a.BasicAgent) and agent.hunger >= 4:
                 self.schedule.remove(agent)
                 self.grid.remove_agent(agent)
+
+    def add_agent(self, agent):
+        self.schedule.add(agent)
+        x, y = self.find_valid_agent_location()
+        self.grid.place_agent(agent, (x, y))
 
     def count(self, obj):
         count = 0

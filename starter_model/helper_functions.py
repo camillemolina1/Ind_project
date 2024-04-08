@@ -28,6 +28,14 @@ def check_if_valid_move(agent, move):
     return False
 
 
+def is_agent_in_the_way(a):
+    if isinstance(a.check_if_near(Plant, v.PLANT), Plant):
+        return True
+    elif isinstance(a.check_if_near(TradingMarket, 0), TradingMarket):
+        return True
+    return False
+
+
 def find_all_valid_moves(agent):
     moves = []
     possible_moves = agent.model.grid.get_neighborhood(

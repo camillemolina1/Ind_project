@@ -8,6 +8,8 @@ Agents can:
 + eat food
 + trade food for seeds at the trading stations
 + plant the seeds on the soil
++ push agents away
++ give agents food
   
 Plants now take time to grow  
 + they start off as seeds and get bigger with time (4 sizes possible)   

@@ -23,22 +23,6 @@ class MyModel(mesa.Model):
         self._time = 0  # the model's clock
         self.running = True
 
-        self.count_chart = DataCollector(
-            {
-                "Agent_count": lambda l: self.count(a.BasicAgent),
-                "Food_count": lambda l: self.count(Plant),
-            }
-        )
-        self.hunger_levels = DataCollector(
-            {
-                "Agent 1": lambda l: self.get_hunger(0),
-                "Agent 2": lambda l: self.get_hunger(1),
-                "Agent 3": lambda l: self.get_hunger(2),
-                "Agent 4": lambda l: self.get_hunger(3),
-                "Agent 5": lambda l: self.get_hunger(4),
-            }
-        )
-
         tot_agents = self.num_agents[0] + self.num_agents[1] + self.num_agents[2] + self.num_agents[3] + self.num_agents[4]
         # place plants
         for j in range(tot_agents, tot_agents + self.amount_of_food):
@@ -84,6 +68,22 @@ class MyModel(mesa.Model):
         for i in range(self.num_agents[4]):
             ag = a.SadisticAgent(t + i, self)
             self.add_agent(ag)
+
+        self.count_chart = DataCollector(
+            {
+                "Agent_count": lambda l: self.count(a.BasicAgent),
+                "Food_count": lambda l: self.count(Plant),
+            }
+        )
+        self.hunger_levels = DataCollector(
+            {
+                "Agent 1": lambda l: self.get_hunger(0),
+                "Agent 2": lambda l: self.get_hunger(1),
+                "Agent 3": lambda l: self.get_hunger(2),
+                "Agent 4": lambda l: self.get_hunger(3),
+                "Agent 5": lambda l: self.get_hunger(4),
+            }
+        )
 
     def step(self):
         self.schedule.step()

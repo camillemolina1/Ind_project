@@ -104,48 +104,59 @@ class TradingAgent(OmniscientAgent):
         self.hunger = 0
         self.hunger_limit = 0
         self.has = v.SOIL
-        self.path = []
 
     def move(self):
         new_position = p.simple_trading_policy(self)
         self.grid.move_agent(self, new_position)
-        self.path = self.path.remove(new_position)
 
     # take food from soil
     def take_food(self, plant):
+        print("i'll have some of that")
         plant.take()
         self.has = v.BABY_PLANT
+        self.hunger += 0.1
 
     # eat stored food
     def eat_stored(self):
+        print("yum")
         if self.has > v.NOTHING:
             self.has = v.NOTHING
             self.hunger -= 1
 
     # give food to an agent
     def give(self, agent):
-        if self.has > v.NOTHING and agent.has == v.NOTHING:
-            self.has -= 1
-            agent.has += 1
+        print("here you go!")
+        self.has -= 1
+        agent.has += 1
+        self.hunger += 0.1
 
     # trade food for seeds
     def trade(self):
+        print("trading...")
         self.has = v.SEEDS
+        self.hunger += 0.1
 
     # use seeds to plant more plants
     def plant(self, pos):
+        print("planting...")
         contents = self.grid.get_cell_list_contents(pos)
         soil = contents[0]
         soil.plant()
         self.has = v.NOTHING
+        self.hunger += 0.1
 
     # push agent away (from food)
     def push(self, agent):
+        print("push!")
         position = agent.pos
         new_position = p.random_policy(agent)
         self.grid.move_agent(agent, new_position)
-        self.hunger -= 0.5
+        self.hunger += 0.5
         self.grid.move_agent(self, position)
+
+    def wait(self):
+        print("waiting ...")
+        self.hunger += 0.1
 
     def step(self):
         plant = self.check_if_near(Plant, v.PLANT)
@@ -179,7 +190,7 @@ class TradingAgent(OmniscientAgent):
 class AltruisticAgent(TradingAgent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.hunger_limit = 3
+        self.hunger_limit = 3.5
 
     def move(self):
         new_position = p.altruistic_policy(self)
@@ -191,14 +202,14 @@ class AltruisticAgent(TradingAgent):
         market = self.check_if_near(TradingMarket, 0)
         agents = self.check_if_near_agents(TradingAgent)
 
-        print(self.unique_id, ": I am hungry: ", self.hunger)
         if self.has == v.PLANT and self.hunger > self.hunger_limit:
             self.eat_stored()
             return
         for a in agents:
-            if self.has == v.PLANT and a.hunger > self.hunger:
-                self.give(a)
-                return
+            if self.has == v.PLANT and a.hunger > 2.5:
+                if self.has > v.NOTHING and a.has == v.NOTHING:
+                    self.give(a)
+                    return
         if plant and v.SOIL < plant.size < v.SEEDS:
             if self.has == v.NOTHING:
                 self.take_food(plant)
@@ -231,7 +242,6 @@ class CooperativeAgent(TradingAgent):
         soil = self.check_if_near(Plant, v.SOIL)
         market = self.check_if_near(TradingMarket, 0)
 
-        print(self.unique_id, ": I am hungry: ", self.hunger)
         if self.has == v.PLANT and self.hunger > 3.5:
             self.eat_stored()
             return
@@ -270,19 +280,18 @@ class SelfishAgent(TradingAgent):
         soil = self.check_if_near(Plant, v.SOIL)
         market = self.check_if_near(TradingMarket, 0)
 
-        print(self.unique_id, ": I am hungry: ", self.hunger)
-        if self.has == v.PLANT and self.hunger > 3.5:
+        if self.has == v.PLANT and self.hunger > 3:
             self.eat_stored()
             return
         if plant and v.SOIL < plant.size < v.SEEDS:
             if self.hunger > 3.5:
                 self.eat(plant)
                 return
-            else:
+            elif plant.size == v.BABY_PLANT or self.hunger < -1:
+                self.wait()
+                return
+            elif plant.size > v.BABY_PLANT:
                 if self.has == v.NOTHING:
-                    self.take_food(plant)
-                    return
-                elif self.hunger > -1:
                     self.eat(plant)
                     return
         # agent plants seeds
@@ -314,7 +323,6 @@ class SpitefulAgent(TradingAgent):
         market = self.check_if_near(TradingMarket, 0)
         agents = self.check_if_near_agents(TradingAgent)
 
-        print(self.unique_id, ": I am hungry: ", self.hunger)
         if self.has == v.PLANT and self.hunger > 3.5:
             self.eat_stored()
             return

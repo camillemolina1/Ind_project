@@ -1,5 +1,6 @@
 from model import Plant, TradingMarket
 import variables as v
+import agents as ag
 
 
 def list_contains(p, ls):
@@ -65,6 +66,8 @@ def find_thing(agent, item, size):
             if item == Plant:
                 if size == a.size:
                     items.append(a.pos)
+            elif item == ag.TradingAgent and a.pos != agent.pos:
+                items.append(a.pos)
             elif item == TradingMarket:
                 items.append(a.pos)
     return items
@@ -89,7 +92,7 @@ def find_biggest_plants(agent, size):
 def find_hungriest_agent(agent):
     hungriest_agent = agent
     for a in agent.model.agents:
-        if a.hunger > hungriest_agent.hunger:
+        if isinstance(a, ag.TradingAgent) and 4 > a.hunger > hungriest_agent.hunger:
             hungriest_agent = a
     return hungriest_agent
 
@@ -146,7 +149,7 @@ def find_shortest_path(agent, objs):
                     moves_tried.append(m)
             neighborhood = agent.model.grid.get_neighborhood(p[len(p) - 1], moore=False, include_center=False)
             if lists_contain(neighborhood, objs):
-                return p
+                return p[0]
         paths = new_paths
-    return []
+    return [find_best_move(agent, objs)]
 

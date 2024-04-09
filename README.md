@@ -1,7 +1,9 @@
 # Multi-agent Cooperation Project
 
 ### Current version:  
-Agents need to eat to stay alive (red agent = hungry, blue agent = full)    
+Agents need to eat to stay alive. Agents colors represent their social value orientation (selfish, altruistic, sadistic...) 
+
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/f5b7acfc-315a-4923-8bcf-a0a568db52c5)
   
 Agents can: 
 + move around the grid
@@ -14,9 +16,6 @@ Agents can:
 Plants now take time to grow  
 + they start off as seeds and get bigger with time (4 sizes possible)   
 + you can see how "big" the plant is by the number of leaves (1 leaf = 1 unit of food for agents)
-
-    
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/dd85d565-efc2-43a0-bbd9-409e48ea4d56)
   
   
 ## How to start
@@ -37,14 +36,16 @@ I also found that with plant size 3, if they start with enough food for them all
   
    
 ## Previous versions:  
-  
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/0a0b451d-249b-4f9f-8ccb-aade23d8c92e)
+
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/dd85d565-efc2-43a0-bbd9-409e48ea4d56)
 
 #### Meanings:  
 Agents: (Red circle - hungry)  ------>  (Blue circle - fed)   
 Food: Green circle (the bigger the more food available)  
 Trading stations : Yellow Star  
 Soil : Brown squares
+  
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/0a0b451d-249b-4f9f-8ccb-aade23d8c92e)
 
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/831166e6-39fc-4623-92e0-fe199575db98)
   

@@ -74,6 +74,8 @@ def agent_portrayal(agent):
             portrayal["Color"] = "orange"
         elif isinstance(agent, a.SadisticAgent):
             portrayal["Color"] = "red"
+        if agent.hunger > 3:
+            portrayal["r"] = 0.25
     elif isinstance(agent, Plant):
         portrayal = {"Shape": "circle", "Color": "green", "Filled": "true", "Layer": 1, "r": 0.5}
         if agent.size == 5:

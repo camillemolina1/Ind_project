@@ -74,7 +74,7 @@ def let_seeds_grow_policy(agent):
     plants = h.find_biggest_plants(agent, v.SIZE)
     if len(plants) == 0:
         plants = h.find_thing(agent, Plant, v.SEEDS)
-    return  h.find_shortest_path(agent, plants)
+    return h.find_shortest_path(agent, plants)
 
 
 # agents following this policy will move towards very hungry agents if they have food to give them

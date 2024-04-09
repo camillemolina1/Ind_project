@@ -190,7 +190,7 @@ class TradingAgent(OmniscientAgent):
 class AltruisticAgent(TradingAgent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.hunger_limit = 3.5
+        self.hunger_limit = 3
 
     def move(self):
         new_position = p.altruistic_policy(self)

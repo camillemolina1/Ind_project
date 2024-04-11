@@ -1,8 +1,7 @@
 import mesa
 from mesa_viz_tornado.modules import ChartModule
 import variables as v
-import agents as a
-from model import MyModel, Plant, TradingMarket
+from model import MyModel, Plant, TradingMarket, TradingAgent
 
 
 MODEL_PARAMS = {
@@ -62,17 +61,17 @@ MODEL_PARAMS = {
 def agent_portrayal(agent):
     if isinstance(agent, TradingMarket):
         portrayal = {"Shape": v.MARKET_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
-    elif isinstance(agent, a.BasicAgent):
+    elif isinstance(agent, TradingAgent):
         portrayal = {"Shape": "circle", "Color": "blue", "Filled": "true", "Layer": 1, "r": 0.5}
-        if isinstance(agent, a.AltruisticAgent):
+        if agent.svo == v.ALTRUISTIC:
             portrayal["Color"] = "blue"
-        elif isinstance(agent, a.CooperativeAgent):
+        elif agent.svo == v.COOPERATIVE:
             portrayal["Color"] = "green"
-        elif isinstance(agent, a.SelfishAgent):
+        elif agent.svo == v.SELFISH:
             portrayal["Color"] = "yellow"
-        elif isinstance(agent, a.SpitefulAgent):
+        elif agent.svo == v.COMPETITIVE:
             portrayal["Color"] = "orange"
-        elif isinstance(agent, a.SadisticAgent):
+        elif agent.svo == v.SADISTIC:
             portrayal["Color"] = "red"
         if agent.hunger > 3:
             portrayal["r"] = 0.25

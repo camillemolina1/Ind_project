@@ -3,8 +3,8 @@ from mesa import DataCollector
 from plant import Plant
 from env import Environment
 from market import TradingMarket
+from agents import TradingAgent
 import variables as v
-import agents as a
 import mesa
 
 
@@ -50,28 +50,28 @@ class MyModel(mesa.Model):
 
         # Create agents
         for i in range(self.num_agents[0]):
-            ag = a.AltruisticAgent(i, self)
+            ag = TradingAgent(i, self, v.ALTRUISTIC)
             self.add_agent(ag)
         t = self.num_agents[0]
         for i in range(self.num_agents[1]):
-            ag = a.CooperativeAgent(t + i, self)
+            ag = TradingAgent(t + i, self, v.COMPETITIVE)
             self.add_agent(ag)
         t += self.num_agents[1]
         for i in range(self.num_agents[2]):
-            ag = a.SelfishAgent(t + i, self)
+            ag = TradingAgent(t + i, self, v.SELFISH)
             self.add_agent(ag)
         t += self.num_agents[2]
         for i in range(self.num_agents[3]):
-            ag = a.SpitefulAgent(t + i, self)
+            ag = TradingAgent(t + i, self, v.COMPETITIVE)
             self.add_agent(ag)
         t += self.num_agents[3]
         for i in range(self.num_agents[4]):
-            ag = a.SadisticAgent(t + i, self)
+            ag = TradingAgent(t + i, self, v.SADISTIC)
             self.add_agent(ag)
 
         self.count_chart = DataCollector(
             {
-                "Agent_count": lambda l: self.count(a.BasicAgent),
+                "Agent_count": lambda l: self.count(TradingAgent),
                 "Food_count": lambda l: self.count(Plant),
             }
         )
@@ -93,7 +93,7 @@ class MyModel(mesa.Model):
 
     def check_for_dead(self):
         for agent in self.schedule.agents:
-            if isinstance(agent, a.BasicAgent) and agent.hunger >= 4:
+            if isinstance(agent, TradingAgent) and agent.hunger >= 4:
                 self.schedule.remove(agent)
                 self.grid.remove_agent(agent)
 
@@ -115,7 +115,7 @@ class MyModel(mesa.Model):
 
     def get_hunger(self, agent_id):
         for agent in self.schedule.agents:
-            if agent.unique_id == agent_id and isinstance(agent, a.BasicAgent):
+            if agent.unique_id == agent_id and isinstance(agent, TradingAgent):
                 return agent.hunger
 
     def find_valid_agent_location(self):

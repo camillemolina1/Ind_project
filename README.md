@@ -37,15 +37,13 @@ I also found that with plant size 3, if they start with enough food for them all
    
 ## Previous versions:  
 
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/dd85d565-efc2-43a0-bbd9-409e48ea4d56)
-
 #### Meanings:  
 Agents: (Red circle - hungry)  ------>  (Blue circle - fed)   
 Food: Green circle (the bigger the more food available)  
 Trading stations : Yellow Star  
 Soil : Brown squares
   
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/0a0b451d-249b-4f9f-8ccb-aade23d8c92e)
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/4e634060-9080-4fee-bf0c-759add0ac819)
 
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/831166e6-39fc-4623-92e0-fe199575db98)
   

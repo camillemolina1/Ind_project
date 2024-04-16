@@ -37,6 +37,26 @@ def is_agent_in_the_way(a):
     return False
 
 
+def others_hunger(agents, agent):
+    collective_hunger = 0
+    for a in agents:
+        if isinstance(a, ag.TradingAgent) and a.unique_id != agent.unique_id:
+            collective_hunger += a.hunger
+    return collective_hunger
+
+
+def count(agent, obj):
+    counter = 0
+    for agent in agent.model.agents:
+        if isinstance(agent, obj):
+            if isinstance(agent, Plant):
+                if v.SEEDS > agent.size > v.SOIL:
+                    counter += agent.size
+            else:
+                counter += 1
+    return counter
+
+
 def find_all_valid_moves(agent):
     moves = []
     possible_moves = agent.model.grid.get_neighborhood(
@@ -64,7 +84,9 @@ def find_thing(agent, item, size):
     for a in agent.model.agents:
         if isinstance(a, item):
             if item == Plant:
-                if size == a.size:
+                if size == v.PLANT and (a.size == v.BABY_PLANT or a.size == v.MEDIUM_PlANT or a.size == v.BIG_PlANT or a.size == v.HUGE_PlANT):
+                    items.append(a.pos)
+                elif size == v.SOIL and a.size == size:
                     items.append(a.pos)
             elif item == ag.TradingAgent and a.pos != agent.pos:
                 items.append(a.pos)
@@ -121,23 +143,25 @@ def find_best_move_given_path(agent, move, objs, path):
     return best_move[0]
 
 
-def find_shortest_path(agent, objs):
+def find_shortest_path_helper(agent, objs):
     paths = []
     moves_tried = []
     moves = find_all_valid_moves(agent)
     if len(moves) == 0:
-        return agent.pos
+        print("no moves available")
+        return [agent.pos]
 
     random_move = agent.random.choice(moves)
     if len(objs) == 0:
-        return random_move
+        print("no places to go")
+        return [agent.pos]
 
     for m in moves:
         paths.append([m])
         moves_tried.append(m)
         neighborhood = agent.model.grid.get_neighborhood(m, moore=False, include_center=False)
         if lists_contain(neighborhood, objs):
-            return m
+            return [m]
 
     while len(paths) != 0:
         new_paths = []
@@ -149,7 +173,16 @@ def find_shortest_path(agent, objs):
                     moves_tried.append(m)
             neighborhood = agent.model.grid.get_neighborhood(p[len(p) - 1], moore=False, include_center=False)
             if lists_contain(neighborhood, objs):
-                return p[0]
+                return p
         paths = new_paths
-    return find_best_move(agent, objs)
+    print("can't find a path")
+    return []
+
+
+def find_shortest_path(agent, objs):
+    path = find_shortest_path_helper(agent, objs)
+    if not path:
+        return find_best_move(agent, objs)
+    else:
+        return path[0]
 

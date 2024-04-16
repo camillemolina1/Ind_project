@@ -1,8 +1,7 @@
 import mesa
-from mesa_viz_tornado.modules import ChartModule
+from mesa_viz_tornado.modules import ChartModule, BarChartModule
 import variables as v
 from model import MyModel, Plant, TradingMarket, TradingAgent
-
 
 MODEL_PARAMS = {
     "altruistic_agents": mesa.visualization.Slider(
@@ -103,9 +102,30 @@ def agent_portrayal(agent):
 
 grid = mesa.visualization.CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 
-count_chart = ChartModule(
-    [{"Label": "Agent_count", "Color": "#21A2EC"}, {"Label": "Food_count", "Color": "#EC4521"}],
-    data_collector_name="count_chart"
+food_count_chart = ChartModule(
+    [{"Label": "Food_count", "Color": "#24D339"}],
+    data_collector_name="food_count_chart"
+)
+
+agent_count_chart = ChartModule(
+    [{"Label": "Agent_count", "Color": "#21A2EC"}],
+    data_collector_name="agent_count_chart"
+)
+
+agent_activity = BarChartModule(
+    [{"Label": "Eat", "Color": "#21A2EC"},
+     {"Label": "Eat Stored", "Color": "#21A2EC"},
+     {"Label": "Take", "Color": "#21A2EC"},
+     {"Label": "Trade", "Color": "#21A2EC"},
+     {"Label": "Plant", "Color": "#21A2EC"},
+     {"Label": "Give", "Color": "#21A2EC"},
+     {"Label": "Push", "Color": "#21A2EC"}],
+    data_collector_name="agent_activity"
+)
+
+agent_activity2 = BarChartModule(
+    [{"Label": "Wait", "Color": "#21A2EC"}, {"Label": "Move", "Color": "#21A2EC"}],
+    data_collector_name="agent_activity2"
 )
 
 hunger_level_chart = ChartModule(
@@ -114,9 +134,10 @@ hunger_level_chart = ChartModule(
      {"Label": "Agent 5", "Color": "#ED47E3"}], data_collector_name="hunger_levels"
 )
 
-
 server = mesa.visualization.ModularServer(
-    MyModel, [grid, hunger_level_chart, count_chart], "Hungry Agents Model", MODEL_PARAMS
+    MyModel, [grid, hunger_level_chart, agent_count_chart, food_count_chart,
+              agent_activity, agent_activity2],
+    "Hungry Agents Model", MODEL_PARAMS
 )
 
 server.port = 8521  # default

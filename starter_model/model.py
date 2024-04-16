@@ -22,6 +22,7 @@ class MyModel(mesa.Model):
         self._steps: int = 0
         self._time = 0  # the model's clock
         self.running = True
+        self.moves = []
 
         tot_agents = self.num_agents[0] + self.num_agents[1] + self.num_agents[2] + self.num_agents[3] + self.num_agents[4]
         # place plants
@@ -54,7 +55,7 @@ class MyModel(mesa.Model):
             self.add_agent(ag)
         t = self.num_agents[0]
         for i in range(self.num_agents[1]):
-            ag = TradingAgent(t + i, self, v.COMPETITIVE)
+            ag = TradingAgent(t + i, self, v.COOPERATIVE)
             self.add_agent(ag)
         t += self.num_agents[1]
         for i in range(self.num_agents[2]):
@@ -69,9 +70,13 @@ class MyModel(mesa.Model):
             ag = TradingAgent(t + i, self, v.SADISTIC)
             self.add_agent(ag)
 
-        self.count_chart = DataCollector(
+        self.agent_count_chart = DataCollector(
             {
                 "Agent_count": lambda l: self.count(TradingAgent),
+            }
+        )
+        self.food_count_chart = DataCollector(
+            {
                 "Food_count": lambda l: self.count(Plant),
             }
         )
@@ -84,12 +89,32 @@ class MyModel(mesa.Model):
                 "Agent 5": lambda l: self.get_hunger(4),
             }
         )
+        self.agent_activity = DataCollector(
+            {
+                "Eat": lambda l: self.get_moves("eat"),
+                "Eat Stored": lambda l: self.get_moves("eat_stored"),
+                "Take": lambda l: self.get_moves("take"),
+                "Trade": lambda l: self.get_moves("trade"),
+                "Plant": lambda l: self.get_moves("plant"),
+                "Give": lambda l: self.get_moves("give"),
+                "Push": lambda l: self.get_moves("push"),
+            }
+        )
+        self.agent_activity2 = DataCollector(
+            {
+                "Move": lambda l: self.get_moves("move"),
+                "Wait": lambda l: self.get_moves("wait"),
+             }
+        )
 
     def step(self):
         self.schedule.step()
         self.check_for_dead()
         self.hunger_levels.collect(self)
-        self.count_chart.collect(self)
+        self.agent_count_chart.collect(self)
+        self.food_count_chart.collect(self)
+        self.agent_activity.collect(self)
+        self.agent_activity2.collect(self)
 
     def check_for_dead(self):
         for agent in self.schedule.agents:
@@ -117,6 +142,12 @@ class MyModel(mesa.Model):
         for agent in self.schedule.agents:
             if agent.unique_id == agent_id and isinstance(agent, TradingAgent):
                 return agent.hunger
+
+    def get_moves(self, move):
+        for agent in self.schedule.agents:
+            if isinstance(agent, TradingAgent) and agent.last_move == move:
+                self.moves.append(move)
+        return self.moves.count(move)
 
     def find_valid_agent_location(self):
         x = self.random.randrange(self.grid.width)

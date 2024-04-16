@@ -62,7 +62,7 @@ def simple_trading_policy(agent):
 
 
 # building on previous policy this one tries to leave the smaller plants a chance to grow
-def let_seeds_grow_policy(agent):
+def cooperative_policy(agent):
     if agent.has == v.PLANT:
         markets = h.find_thing(agent, TradingMarket, 0)
         return h.find_shortest_path(agent, markets)

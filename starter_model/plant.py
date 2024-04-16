@@ -7,13 +7,12 @@ class Plant(mesa.Agent):
         super().__init__(unique_id, model)
         self.pos = pos
         self.size = size
-        self.max_size = plant_params[1]
-        self.growth = plant_params[0]
-        self.growth_time = plant_params[2]
+        self.max_size = plant_params[0]
+        self.growth_time = plant_params[1]
         self.time = 0
 
     def step(self):
-        if self.growth:
+        if self.growth_time > 0:
             if v.SOIL < self.size < self.max_size:
                 if self.time > self.growth_time:
                     self.size += 1
@@ -30,8 +29,14 @@ class Plant(mesa.Agent):
 
     def plant(self):
         if self.size == v.SOIL:
-            self.size = v.SEEDS
+            if self.growth_time > 0:
+                self.size = v.SEEDS
+            else:
+                self.size = self.max_size
         return
 
+    def take(self):
+        self.size -= 1
+        self.time = 0
 
 

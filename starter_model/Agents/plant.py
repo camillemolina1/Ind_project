@@ -1,5 +1,5 @@
 import mesa
-import variables as v
+from Helpers import variables as v
 
 
 class Plant(mesa.Agent):

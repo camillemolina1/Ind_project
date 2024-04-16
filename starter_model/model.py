@@ -1,10 +1,10 @@
 from mesa import DataCollector
+from mesa.space import SingleGrid
 
-from plant import Plant
-from env import Environment
-from market import TradingMarket
-from agents import TradingAgent
-import variables as v
+from Agents.plant import Plant
+from Agents.market import TradingMarket
+from Agents.agents import TradingAgent
+from Helpers import variables as v
 import mesa
 
 
@@ -17,7 +17,7 @@ class MyModel(mesa.Model):
         self.plant_params = [v.SIZE, v.GROWTH_TIME]
         self.soil = [(width - 3, height - 4), (height - 1, width - 1), (width - 3, height - 9), (height - 6, width - 1)]
 
-        self.grid = Environment(width, height)
+        self.grid = SingleGrid(width, height, torus=False)
         self.schedule = mesa.time.RandomActivation(self)
         self._steps: int = 0
         self._time = 0  # the model's clock

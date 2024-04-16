@@ -1,6 +1,6 @@
 import mesa
 from mesa_viz_tornado.modules import ChartModule, BarChartModule
-import variables as v
+from Helpers import variables as v
 from model import MyModel, Plant, TradingMarket, TradingAgent
 
 MODEL_PARAMS = {

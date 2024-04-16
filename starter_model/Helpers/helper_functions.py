@@ -1,6 +1,6 @@
 from model import Plant, TradingMarket
-import variables as v
-import agents as ag
+from Helpers import variables as v
+from Agents import agents as ag
 
 
 def list_contains(p, ls):
@@ -27,6 +27,13 @@ def check_if_valid_move(agent, move):
     if len(neighbours) == 0:
         return True
     return False
+
+
+def get_random_move(agent):
+    valid_moves = find_all_valid_moves(agent)
+    if len(valid_moves) == 0:
+        return agent.pos
+    return agent.random.choice(valid_moves)
 
 
 def is_agent_in_the_way(a):

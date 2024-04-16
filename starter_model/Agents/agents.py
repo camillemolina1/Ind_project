@@ -1,8 +1,5 @@
-import random
 import mesa
-import policies as p
-import variables as v
-import helper_functions as h
+from Helpers import variables as v, helper_functions as h
 from model import TradingMarket, Plant
 
 
@@ -16,7 +13,7 @@ class BasicAgent(mesa.Agent):
         self.has = v.NOTHING
 
     def move(self):
-        new_position = p.random_policy(self)
+        new_position = h.get_random_move(self)
         self.grid.move_agent(self, new_position)
 
     def step(self):
@@ -65,7 +62,7 @@ class BasicAgent(mesa.Agent):
     # push agent away (from food)
     def push(self, agent):
         position = agent.pos
-        new_position = p.random_policy(agent)
+        new_position = h.get_random_move(agent)
         if new_position == position:
             self_pos = self.pos
             valid_moves = h.find_all_valid_moves(self)
@@ -139,7 +136,7 @@ class TradingAgent(BasicAgent):
             print("let's go towards ", pick[0])
             pick = pick[3]
         else:
-            pick = p.random_policy(self)
+            pick = h.get_random_move(self)
         self.grid.move_agent(self, pick)
         self.hunger += 0.1
 

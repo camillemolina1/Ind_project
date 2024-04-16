@@ -1,10 +1,16 @@
 # Multi-agent Cooperation Project
 
-### Current version:  
+### Index:
+  - [Current version](#current-version)
+  - [Context](#context)
+  - [How to start](#how-to-start)
+  - [Stats](#stats)
+  - [Previous versions](#previous-versions)
+  - [Past Papers](#past-papers)
+
+## Current version:  
 Agents need to eat to stay alive. Agents colors represent their social value orientation (selfish, altruistic, sadistic...) 
 
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/f5b7acfc-315a-4923-8bcf-a0a568db52c5)
-  
 Agents can: 
 + move around the grid
 + eat food
@@ -12,11 +18,26 @@ Agents can:
 + plant the seeds on the soil
 + push agents away
 + give agents food
+
+<img src="https://github.com/camillemolina1/Ind_project/assets/98462350/f5b7acfc-315a-4923-8bcf-a0a568db52c5" width=50% height=50%>
+
+### Meanings:
+
+  #### Agents:
+  <img src="https://github.com/camillemolina1/Ind_project/assets/98462350/700d48f1-b9f0-4017-8518-61bb318ff845" width=50% height=50%>
   
-Plants now take time to grow  
-+ they start off as seeds and get bigger with time (4 sizes possible)   
-+ you can see how "big" the plant is by the number of leaves (1 leaf = 1 unit of food for agents)
-  
+  #### Plants:
+  + Plants now take time to grow  
+  + they start off as seeds and get bigger with time (4 sizes possible)   
+  + you can see how "big" the plant is by the number of leaves (1 leaf = 1 unit of food for agents)
+
+## Context
+
+### SVO
+Social value orientation (SVO) is a measure that corresponds to a combination of weights an individual places on it's own outcome vs others outcome when making a decision.
+
+![image](https://github.com/camillemolina1/Ind_project/assets/98462350/66bef9b5-f011-471c-a72b-6dc2c827c0d5)
+
   
 ## How to start
 
@@ -52,15 +73,13 @@ Soil : Brown squares
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/a4ada01c-e829-4026-a1bc-b65bb6d20721)
 
 
-## Previous Papers
+## Past Papers
 
 + Open Problems in Cooperative AI by DeepMind - [Paper](https://arxiv.org/pdf/2012.08630.pdf)  
 + UNDERSTANDING THE WORLD TO SOLVE SOCIAL DILEMMAS USING MULTI-AGENT REINFORCEMENT LEARNING - [Paper](https://arxiv.org/pdf/2305.11358.pdf)
 + Learning to cooperate in multi-agent social dilemmas - [Paper](https://www.researchgate.net/publication/221456198_Learning_to_cooperate_in_multi-agent_social_dilemmas)
 + Socially Intelligent Genetic Agents for the Emergence of Explicit Norms - [Paper](https://niravajmeri.github.io/docs/IJCAI22-SIGA.pdf)
 + Too many cooks: Coordinating multi-agent collaboration through inverse planning - [Paper](https://dspace.mit.edu/bitstream/handle/1721.1/138369/0157.pdf?sequence=2&isAllowed=y)
-    
-  
-![image](https://github.com/camillemolina1/Ind_project/assets/98462350/9ce96e66-06f6-4330-8e6e-9b4d9eaaf264)
+
 
 

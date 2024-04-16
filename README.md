@@ -2,7 +2,10 @@
 
 ### Index:
   - [Current version](#current-version)
+    - [Model](#model)
+    - [Meanings](#meanings)
   - [Context](#context)
+    - [SVO](#svo)
   - [How to start](#how-to-start)
   - [Stats](#stats)
   - [Previous versions](#previous-versions)
@@ -11,13 +14,15 @@
 ## Current version:  
 Agents need to eat to stay alive. Agents colors represent their social value orientation (selfish, altruistic, sadistic...) 
 
-Agents can: 
-+ move around the grid
-+ eat food
-+ trade food for seeds at the trading stations
-+ plant the seeds on the soil
-+ push agents away
-+ give agents food
+  Agents can: 
+  + move around the grid
+  + eat food
+  + trade food for seeds at the trading stations
+  + plant the seeds on the soil
+  + push agents away
+  + give agents food
+
+### Model:
 
 <img src="https://github.com/camillemolina1/Ind_project/assets/98462350/f5b7acfc-315a-4923-8bcf-a0a568db52c5" width=50% height=50%>
 

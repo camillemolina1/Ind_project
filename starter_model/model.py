@@ -80,7 +80,7 @@ class MyModel(mesa.Model):
                 "Food_count": lambda l: self.count(Plant),
             }
         )
-        self.hunger_levels = DataCollector(
+        self.datacollector = DataCollector(
             {
                 "Agent 1": lambda l: self.get_hunger(0),
                 "Agent 2": lambda l: self.get_hunger(1),
@@ -110,7 +110,7 @@ class MyModel(mesa.Model):
     def step(self):
         self.schedule.step()
         self.check_for_dead()
-        self.hunger_levels.collect(self)
+        self.datacollector.collect(self)
         self.agent_count_chart.collect(self)
         self.food_count_chart.collect(self)
         self.agent_activity.collect(self)
@@ -118,7 +118,7 @@ class MyModel(mesa.Model):
 
     def check_for_dead(self):
         for agent in self.schedule.agents:
-            if isinstance(agent, TradingAgent) and agent.hunger >= 4:
+            if isinstance(agent, TradingAgent) and agent.hunger > 4:
                 self.schedule.remove(agent)
                 self.grid.remove_agent(agent)
 
@@ -146,6 +146,11 @@ class MyModel(mesa.Model):
     def get_moves(self, move):
         for agent in self.schedule.agents:
             if isinstance(agent, TradingAgent) and agent.last_move == move:
+                self.moves.append(move)
+            if isinstance(agent, TradingAgent) and move == "move" and (agent.last_move == "move - market" or
+                                                                       agent.last_move == "move - agents" or
+                                                                       agent.last_move == "move - plants" or
+                                                                       agent.last_move == "move - soil"):
                 self.moves.append(move)
         return self.moves.count(move)
 

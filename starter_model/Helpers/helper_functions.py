@@ -155,12 +155,12 @@ def find_shortest_path_helper(agent, objs):
     moves_tried = []
     moves = find_all_valid_moves(agent)
     if len(moves) == 0:
-        print("no moves available")
+        # print("no moves available")
         return [agent.pos]
 
     random_move = agent.random.choice(moves)
     if len(objs) == 0:
-        print("no places to go")
+        # print("no places to go")
         return [agent.pos]
 
     for m in moves:
@@ -182,7 +182,7 @@ def find_shortest_path_helper(agent, objs):
             if lists_contain(neighborhood, objs):
                 return p
         paths = new_paths
-    print("can't find a path")
+    # print("can't find a path")
     return []
 
 

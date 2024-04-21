@@ -122,54 +122,99 @@ class TradingAgent(BasicAgent):
         super().__init__(unique_id, model)
         self.svo = svo
         self.last_move = "nothing"
-        if svo == v.ALTRUISTIC:
-            self.hunger_limit = 3
-        else:
-            self.hunger_limit = 1.5
         self.hunger = 0
         self.has = v.NOTHING
 
-    def move(self):
-        moves = self.calc_moves()
-        if moves:
-            pick = self.choose_move(moves)
-            print("let's go towards ", pick[0])
-            pick = pick[3]
+    def move_towards(self, move):
+        if move:
+            # print("let's go towards ", move[0])
+            pick = move[3]
         else:
             pick = h.get_random_move(self)
         self.grid.move_agent(self, pick)
         self.hunger += 0.1
 
-    def calc_moves(self):
+    def calc_moves(self, next_to_plant, next_to_soil, next_to_market, next_to_agents):
         soil = h.find_thing(self, Plant, v.SOIL)
         plants = h.find_thing(self, Plant, v.PLANT)
         agents = h.find_thing(self, TradingAgent, 0)
         markets = h.find_thing(self, TradingMarket, 0)
+        self_hunger = self.hunger/5
 
-        paths = [h.find_shortest_path_helper(self, soil), h.find_shortest_path_helper(self, plants),
-                 h.find_shortest_path_helper(self, agents), h.find_shortest_path_helper(self, markets)]
+        soil_path, plants_path, agents_path, market_path = (h.find_shortest_path_helper(self, soil),
+                                                            h.find_shortest_path_helper(self, plants),
+                                                            h.find_shortest_path_helper(self, agents),
+                                                            h.find_shortest_path_helper(self, markets))
 
         moves = []
-        if paths[1] and paths[1][0] != self.pos:
+        if plants_path and plants_path[0] != self.pos and not next_to_plant:
             if self.has == v.PLANT:
-                moves = [["plant", 1 - (len(paths[1]) / 100), 0, paths[1][0]]]
+                moves = [["move - plants", 1 - (len(plants_path) / 20) + self_hunger, -0.5, plants_path[0]]]
             else:
-                moves = [["plant", 1 - (len(paths[1]) / 100) + self.hunger, 0, paths[1][0]]]
+                moves = [["move - plants", 1 - (len(plants_path) / 20) + self_hunger, 0, plants_path[0]]]
         if self.has == v.PLANT:
-            if paths[3] and paths[3][0] != self.pos:
-                moves.append(["market", 1 - (len(paths[3]) / 100), 0.5 - (len(paths[3]) / 100), paths[3][0]])
-            if paths[2] and paths[2][0] != self.pos:
-                moves.append(["agent", - 1 - (len(paths[2]) / 100), 1 - (len(paths[2]) / 100), paths[2][0]])
+            if market_path and market_path[0] != self.pos and not next_to_market:
+                moves.append(["move - market", 1 - (len(market_path) / 20), 1 - (len(market_path) / 20), market_path[0]])
+            if agents_path and agents_path[0] != self.pos and not next_to_agents:
+                moves.append(["move - agents", - 1 - (len(agents_path) / 20), 1, agents_path[0]])
         else:
-            if paths[3] and paths[3][0] != self.pos:
-                moves.append(["market", 0 - (len(paths[3]) / 100), 0 - (len(paths[3]) / 100), paths[3][0]])
-            if paths[2] and paths[2][0] != self.pos:
-                moves.append(["agent", 0.5 - (len(paths[2]) / 100), - 0.5 - (len(paths[2]) / 100), paths[2][0]])
-        if paths[0] and paths[0][0] != self.pos:
+            if market_path and market_path[0] != self.pos and not next_to_market:
+                moves.append(["move - market", 0 - (len(market_path) / 20), 0, market_path[0]])
+            if agents_path and agents_path[0] != self.pos and not next_to_agents:
+                moves.append(["move - agents", -0.3 - (len(agents_path) / 20), - 0.5, agents_path[0]])
+        if soil_path and soil_path[0] != self.pos and not next_to_soil:
             if self.has == v.SEEDS:
-                moves.append(["soil", 1 - (len(paths[0]) / 100), 0.5 - (len(paths[0]) / 100), paths[0][0]])
+                moves.append(["move - soil", 1 - (len(soil_path) / 20), 0.5 - (len(soil_path) / 20), soil_path[0]])
             else:
-                moves.append(["soil", 0 - (len(paths[0]) / 100), 0 - (len(paths[0]) / 100), paths[0][0]])
+                moves.append(["move - soil", 0 - (len(soil_path) / 20), 0 - (len(soil_path) / 20), soil_path[0]])
+        return moves
+
+    def find_moves(self, plant, soil, market, agents):
+        self_hunger = self.hunger / 5
+        collective_hunger = h.others_hunger(self.model.agents, self)
+        collective_hunger = (collective_hunger / h.count(self, TradingAgent)) / 5
+        nb_of_food_left = h.count(self, Plant) / 5
+
+        moves = self.calc_moves(plant, soil, market, agents)
+        # print("self: ", self_hunger, " vs collective: ", collective_hunger)
+
+        if plant:
+            take = ["take", 1.5 + self_hunger + nb_of_food_left, nb_of_food_left]
+            eat = ["eat", 1 + self_hunger + nb_of_food_left, - 1 - collective_hunger + nb_of_food_left]
+            w = 0
+            if agents:
+                w = -0.5
+            wait = ["wait", -0.1, w - collective_hunger]
+            if plant.size < v.MEDIUM_PlANT:
+                take = ["take", 0 + self_hunger, 0 - collective_hunger]
+                eat = ["eat", 0 + self_hunger, -1.5 - collective_hunger]
+                wait = ["wait", 1, w - collective_hunger]
+            if self.has == v.NOTHING:
+                moves.append(take)
+            if self.hunger > -4:
+                moves.append(eat)
+            moves.append(wait)
+        if soil and self.has == v.SEEDS:
+            moves.append(["plant", 1.5, 0.5])
+        if market and self.has == v.PLANT:
+            moves.append(["trade", 2 - self_hunger, 0.5 + collective_hunger])
+        if agents:
+            if self.has == v.PLANT:
+                moves.append(["give", -1, 1 + collective_hunger])
+            for a in agents:
+                if h.is_agent_in_the_way(a):
+                    if self_hunger > 0:
+                        if collective_hunger > 0:
+                            moves.append(["push", -0.5 + (self_hunger * 3), -0.5 - collective_hunger])
+                        else:
+                            moves.append(["push", -0.5 + (self_hunger * 3), -0.5])
+                    else:
+                        if collective_hunger > 0:
+                            moves.append(["push", -0.5, -0.5 - collective_hunger])
+                        else:
+                            moves.append(["push", -0.5, -0.5])
+        if self.has == v.PLANT and self.hunger > -4:
+            moves.append(["eat_stored", 1 + self_hunger, -1 - collective_hunger + nb_of_food_left])
         return moves
 
     def choose_move(self, moves):
@@ -214,85 +259,47 @@ class TradingAgent(BasicAgent):
 
     def do_move(self, move, plant, soil, agent):
         self.last_move = move[0]
-        if move[0] == "move":
-            self.move()
+        if (move[0] == "move - agents" or move[0] == "move - market"
+                or move[0] == "move - soil" or move[0] == "move - plants"):
+            self.move_towards(move)
         elif move[0] == "eat_stored":
             self.eat_stored()
-            print("eating stored food")
+            # print("eating stored food")
         elif move[0] == "take":
             self.take_food(plant)
-            print("taking")
+            # print("taking")
         elif move[0] == "eat":
             self.eat(plant)
-            print("eating")
+            # print("eating")
         elif move[0] == "wait":
             self.wait()
-            print("waiting")
+            # print("waiting")
         elif move[0] == "push":
             self.push(agent[0])
-            print("pushing")
+            # print("pushing")
         elif move[0] == "plant":
             self.plant(soil)
-            print("planting")
+            # print("planting")
         elif move[0] == "trade":
             self.trade()
-            print("trading")
+            # print("trading")
         elif move[0] == "give":
             self.give(agent[0])
-            print("giving")
-
-    def find_moves(self, plant, soil, market, agents):
-        self_hunger = self.hunger / 10
-        collective_hunger = h.others_hunger(self.model.agents, self)
-        collective_hunger = (collective_hunger / h.count(self, TradingAgent)) / 10
-
-        moves = [["move", 0, 0]]
-        print("self: ", self_hunger, " vs collective: ", collective_hunger)
-
-        if plant:
-            take = ["take", 0.5 + self_hunger, 0]
-            eat = ["eat", 1 + self_hunger, - 1 - collective_hunger]
-            wait = ["wait", -0.1, -0.5 - collective_hunger]
-            if plant.size < v.MEDIUM_PlANT:
-                take = ["take", 0.5, 0 - collective_hunger]
-                eat = ["eat", 0.1 + self_hunger, -1.5 - collective_hunger]
-                wait = ["wait", 1, -0.5 - collective_hunger]
-            if self.has == v.NOTHING:
-                moves.append(take)
-            moves.append(eat)
-            moves.append(wait)
-        if soil and self.has == v.SEEDS:
-            moves.append(["plant", 1.5, 0.5])
-        if market and self.has == v.PLANT:
-            moves.append(["trade", 2 - self_hunger, 0.5 + collective_hunger])
-        if agents:
-            if self.has == v.PLANT:
-                moves.append(["give", -1, 1 + collective_hunger])
-            for a in agents:
-                if h.is_agent_in_the_way(a):
-                    if self_hunger > 0:
-                        if collective_hunger > 0:
-                            moves.append(["push", -0.5 + self_hunger, -0.5 - collective_hunger])
-                        else:
-                            moves.append(["push", -0.5 + self_hunger, -0.5])
-                    else:
-                        if collective_hunger > 0:
-                            moves.append(["push", -0.5, -0.5 - collective_hunger])
-                        else:
-                            moves.append(["push", -0.5, -0.5])
-        if self.has == v.PLANT:
-            moves.append(["eat_stored", 1 + (self_hunger * 1.5), -1.5 - collective_hunger])
-        return moves
+            # print("giving")
 
     def step(self):
-        print("")
+        # print("")
         plant = self.check_if_near(Plant, v.PLANT)
         soil = self.check_if_near(Plant, v.SOIL)
         market = self.check_if_near(TradingMarket, 0)
         agents = self.check_if_near_agents(TradingAgent)
 
         moves = self.find_moves(plant, soil, market, agents)
-        print(self.unique_id, moves)
-        pick = self.choose_move(moves)
+        # print(self.svo, moves)
+        if moves:
+            pick = self.choose_move(moves)
+        else:
+            pick = ["wait", 0, 0]
+        # print(pick)
         self.do_move(pick, plant, soil, agents)
 

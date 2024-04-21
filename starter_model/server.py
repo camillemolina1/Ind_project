@@ -128,14 +128,14 @@ agent_activity2 = BarChartModule(
     data_collector_name="agent_activity2"
 )
 
-hunger_level_chart = ChartModule(
+datacollector = ChartModule(
     [{"Label": "Agent 1", "Color": "#EC4521"}, {"Label": "Agent 2", "Color": "#21A2EC"},
      {"Label": "Agent 3", "Color": "#24D339"}, {"Label": "Agent 4", "Color": "#EDDE47"},
-     {"Label": "Agent 5", "Color": "#ED47E3"}], data_collector_name="hunger_levels"
+     {"Label": "Agent 5", "Color": "#ED47E3"}], data_collector_name="datacollector"
 )
 
 server = mesa.visualization.ModularServer(
-    MyModel, [grid, hunger_level_chart, agent_count_chart, food_count_chart,
+    MyModel, [grid, datacollector, agent_count_chart, food_count_chart,
               agent_activity, agent_activity2],
     "Hungry Agents Model", MODEL_PARAMS
 )

@@ -124,6 +124,7 @@ class TradingAgent(BasicAgent):
         self.last_move = "nothing"
         self.hunger = 0
         self.has = v.NOTHING
+        self.guesses = [-1, -1, -1, -1, -1]
 
     def move_towards(self, move):
         if move:
@@ -287,12 +288,48 @@ class TradingAgent(BasicAgent):
             self.give(agent[0])
             # print("giving")
 
+    def analyse_others_moves(self):
+        if self.guesses == [-1, -1, -1, -1, -1]:
+            for agent in self.model.agents:
+                if isinstance(agent, TradingAgent):
+                    if not agent.unique_id == self.unique_id:
+                        self.guesses[agent.unique_id] = self.svo
+
+        new_guesses = [-1, -1, -1, -1, -1]
+        for agent in self.model.schedule.agents:
+            if isinstance(agent, TradingAgent) and not agent.unique_id == self.unique_id:
+                if agent.last_move == "trade" or agent.last_move == "plant":
+                    if self.guesses[agent.unique_id] == v.SELFISH or self.guesses[agent.unique_id] == v.COOPERATIVE:
+                        new_guesses[agent.unique_id] = v.COOPERATIVE
+                    else:
+                        new_guesses[agent.unique_id] = v.SELFISH
+                elif agent.last_move == "push":
+                    if self.guesses[agent.unique_id] == v.SELFISH or self.guesses[agent.unique_id] == v.COMPETITIVE:
+                        new_guesses[agent.unique_id] = self.guesses[agent.unique_id] + 1
+                    elif self.guesses[agent.unique_id] == v.SADISTIC:
+                        new_guesses[agent.unique_id] = v.SADISTIC
+                    else:
+                        new_guesses[agent.unique_id] = v.SELFISH
+                elif agent.last_move == "give":
+                    new_guesses[agent.unique_id] = v.ALTRUISTIC
+                else:
+                    new_guesses[agent.unique_id] = self.guesses[agent.unique_id]
+        self.guesses = new_guesses
+
     def step(self):
         # print("")
         plant = self.check_if_near(Plant, v.PLANT)
         soil = self.check_if_near(Plant, v.SOIL)
         market = self.check_if_near(TradingMarket, 0)
         agents = self.check_if_near_agents(TradingAgent)
+
+        self.analyse_others_moves()
+        if not self.guesses.__contains__(v.COMPETITIVE) and not self.guesses.__contains__(v.SADISTIC):
+            if self.svo == v.COMPETITIVE:
+                self.svo = v.SELFISH
+        if not self.guesses.__contains__(v.COOPERATIVE) and not self.guesses.__contains__(v.ALTRUISTIC):
+            if self.svo == v.COOPERATIVE:
+                self.svo = v.SELFISH
 
         moves = self.find_moves(plant, soil, market, agents)
         # print(self.svo, moves)

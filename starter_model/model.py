@@ -109,8 +109,8 @@ class MyModel(mesa.Model):
 
     def step(self):
         self.schedule.step()
-        self.check_for_dead()
         self.datacollector.collect(self)
+        self.check_for_dead()
         self.agent_count_chart.collect(self)
         self.food_count_chart.collect(self)
         self.agent_activity.collect(self)
@@ -121,6 +121,7 @@ class MyModel(mesa.Model):
             if isinstance(agent, TradingAgent) and agent.hunger > 4:
                 self.schedule.remove(agent)
                 self.grid.remove_agent(agent)
+                self.agents.remove(agent)
 
     def add_agent(self, agent):
         self.schedule.add(agent)

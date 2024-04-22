@@ -54,9 +54,10 @@ Social value orientation (SVO) is a measure that corresponds to a combination of
   
 ## Stats
   
-To see which settings I should use in terms of the number of agents, food sources, etc.. I ran the simulation a few times and noted down how long the agents were surviving. 
-From this I found that in a few cases 1 agent did manage to survive forever with plant size 2. However, generally speaking plants need to be at least of size 3 for agents to be able to survive. 
-I also found that with plant size 3, if they start with enough food for them all they will all survive and if they don't (ex: 4 agents and 6 units of food) the amount of survivors changes everytime, generally at least 1 survives but the agents tend to get in each others way which leads to the death of many of them.   
+Batch running the model with different parameters allows me to observe patterns in the agents behavior. Currently the batch run is set to run the model 50 times with a max of 500 iterations as I have observed that by that point is the agents are alive they don't ever die. 
+  
+So far I have observed that cooperative agents do the best, particularlly when there are lots of agents in the simualtion with limited food. The selfish agents also do pretty well however as soon as I add more of them into the model then tend to not do as well as a society. Competitive agents do well on theri own but as soon as I add anyone else to the model they almost always both die. Sadistic agents can lower agent's survival rates but as long as agents survive longer than 40 or so steps the sadistic agent usually dies. Finally altruistic agents that were supposed to help other agents actually seem to be doing the opposite as they get in the way of agents and are constantly taking food and not planting anything. 
+
   
 [Link to the stats](https://docs.google.com/spreadsheets/d/1qSnYWWC09E4w8XfDHmruH8CnVsvGIsqf_7_NuVMXrPo/edit#gid=0)
   

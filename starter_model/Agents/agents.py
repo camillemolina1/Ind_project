@@ -118,12 +118,15 @@ class BasicAgent(mesa.Agent):
 
 # These agents act based on their social value orientation
 class TradingAgent(BasicAgent):
-    def __init__(self, unique_id, model, svo):
+    def __init__(self, unique_id, model, svo, svo_changes, prison):
         super().__init__(unique_id, model)
         self.svo = svo
+        self.model = model
         self.last_move = "nothing"
         self.hunger = 0
         self.has = v.NOTHING
+        self.changing_svo = svo_changes
+        self.prison = prison
         self.guesses = [-1, -1, -1, -1, -1]
 
     def move_towards(self, move):
@@ -140,13 +143,12 @@ class TradingAgent(BasicAgent):
         plants = h.find_thing(self, Plant, v.PLANT)
         agents = h.find_thing(self, TradingAgent, 0)
         markets = h.find_thing(self, TradingMarket, 0)
-        self_hunger = self.hunger/5
+        self_hunger = self.hunger / 5
 
         soil_path, plants_path, agents_path, market_path = (h.find_shortest_path_helper(self, soil),
                                                             h.find_shortest_path_helper(self, plants),
                                                             h.find_shortest_path_helper(self, agents),
                                                             h.find_shortest_path_helper(self, markets))
-
         moves = []
         if plants_path and plants_path[0] != self.pos and not next_to_plant:
             if self.has == v.PLANT:
@@ -155,7 +157,8 @@ class TradingAgent(BasicAgent):
                 moves = [["move - plants", 1 - (len(plants_path) / 20) + self_hunger, 0, plants_path[0]]]
         if self.has == v.PLANT:
             if market_path and market_path[0] != self.pos and not next_to_market:
-                moves.append(["move - market", 1 - (len(market_path) / 20), 1 - (len(market_path) / 20), market_path[0]])
+                moves.append(
+                    ["move - market", 1 - (len(market_path) / 20), 1 - (len(market_path) / 20), market_path[0]])
             if agents_path and agents_path[0] != self.pos and not next_to_agents:
                 moves.append(["move - agents", - 1 - (len(agents_path) / 20), 1, agents_path[0]])
         else:
@@ -309,12 +312,36 @@ class TradingAgent(BasicAgent):
                     elif self.guesses[agent.unique_id] == v.SADISTIC:
                         new_guesses[agent.unique_id] = v.SADISTIC
                     else:
-                        new_guesses[agent.unique_id] = v.SELFISH
+                        new_guesses[agent.unique_id] = v.COMPETITIVE
                 elif agent.last_move == "give":
                     new_guesses[agent.unique_id] = v.ALTRUISTIC
                 else:
                     new_guesses[agent.unique_id] = self.guesses[agent.unique_id]
         self.guesses = new_guesses
+
+    def check_on_agents(self):
+        for agent in self.model.schedule.agents:
+            if isinstance(agent, TradingAgent) and not agent.unique_id == self.unique_id:
+                # if agent is in "jail" and has become good, let him out
+                if agent.pos[1] < 4 and self.guesses[agent.unique_id] < v.COMPETITIVE:
+                    x = self.random.randrange(self.grid.width)
+                    y = self.random.randrange(4, self.grid.height)
+                    while len(self.grid.get_cell_list_contents((x, y))) != 0:
+                        x = self.random.randrange(self.grid.width)
+                        y = self.random.randrange(4, self.grid.height)
+                    self.grid.move_agent(agent, (x, y))
+                    # print((x, y))
+        for agent in self.model.schedule.agents:
+            if isinstance(agent, TradingAgent) and not agent.unique_id == self.unique_id:
+                if agent.last_move == "push" and self.guesses[agent.unique_id] > v.COOPERATIVE:
+                    # print(self.guesses[agent.unique_id])
+                    x = self.random.randrange(self.grid.width)
+                    y = self.random.randrange(0, 4)
+                    while len(self.grid.get_cell_list_contents((x, y))) != 0:
+                        x = self.random.randrange(self.grid.width)
+                        y = self.random.randrange(0, 4)
+                    self.grid.move_agent(agent, (x, y))
+                    # print((x, y))
 
     def step(self):
         # print("")
@@ -323,20 +350,23 @@ class TradingAgent(BasicAgent):
         market = self.check_if_near(TradingMarket, 0)
         agents = self.check_if_near_agents(TradingAgent)
 
-        self.analyse_others_moves()
-        if not self.guesses.__contains__(v.COMPETITIVE) and not self.guesses.__contains__(v.SADISTIC):
-            if self.svo == v.COMPETITIVE:
-                self.svo = v.SELFISH
-        if not self.guesses.__contains__(v.COOPERATIVE) and not self.guesses.__contains__(v.ALTRUISTIC):
-            if self.svo == v.COOPERATIVE:
-                self.svo = v.SELFISH
+        if self.changing_svo:
+            self.analyse_others_moves()
+            # print(self.guesses)
+            if not self.guesses.__contains__(v.COMPETITIVE) and not self.guesses.__contains__(v.SADISTIC):
+                if self.svo == v.COMPETITIVE:
+                    self.svo = v.SELFISH
+            if not self.guesses.__contains__(v.COOPERATIVE) and not self.guesses.__contains__(v.ALTRUISTIC):
+                if self.svo == v.COOPERATIVE:
+                    self.svo = v.SELFISH
+        if self.svo == v.COOPERATIVE or self.svo == v.SELFISH or self.svo == v.ALTRUISTIC:
+            if self.prison:
+                self.check_on_agents()
 
         moves = self.find_moves(plant, soil, market, agents)
-        # print(self.svo, moves)
         if moves:
             pick = self.choose_move(moves)
         else:
             pick = ["wait", 0, 0]
         # print(pick)
         self.do_move(pick, plant, soil, agents)
-

@@ -1,6 +1,7 @@
 import mesa
 from mesa_viz_tornado.modules import ChartModule, BarChartModule
 
+from Agents.market import Wall
 from Helpers import variables as v
 from model import MyModel, Plant, TradingMarket, TradingAgent
 
@@ -61,6 +62,8 @@ MODEL_PARAMS = {
 def agent_portrayal(agent):
     if isinstance(agent, TradingMarket):
         portrayal = {"Shape": v.MARKET_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
+    elif isinstance(agent, Wall):
+        portrayal = {"Shape": v.BARS_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
     elif isinstance(agent, TradingAgent):
         portrayal = {"Shape": "circle", "Color": "blue", "Filled": "true", "Layer": 1, "r": 0.5}
         if agent.svo == v.ALTRUISTIC:

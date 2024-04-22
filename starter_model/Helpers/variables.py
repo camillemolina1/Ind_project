@@ -25,6 +25,7 @@ SEEDS = 5
 
 # IMAGES
 STAR_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/../pictures/star.jpg",
+BARS_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/../pictures/Bars.png",
 MARKET_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/../pictures/Market2.png",
 SOIL_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/../pictures/Soil.png",
 SEEDS_IMG = f"{os.path.dirname(os.path.realpath(__file__))}/../pictures/seeds.png",

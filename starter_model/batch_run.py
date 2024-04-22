@@ -8,11 +8,11 @@ from model import MyModel
 
 params = {
     "altruistic_agents": 0,
-    "cooperative_agents": 3,
-    "selfish_agents": 0,
+    "cooperative_agents": 1,
+    "selfish_agents": 1,
     "competitive_agents": 1,
     "sadistic_agents": 0,
-    "plants": 2,
+    "plants": 3,
     "width": 10,
     "height": 10,
 }

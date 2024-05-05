@@ -77,15 +77,3 @@ Soil : Brown squares
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/f47b7578-37c4-481d-b9db-ac4e7961cf49)
   
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/a4ada01c-e829-4026-a1bc-b65bb6d20721)
-
-
-## Past Papers
-
-+ Open Problems in Cooperative AI by DeepMind - [Paper](https://arxiv.org/pdf/2012.08630.pdf)  
-+ UNDERSTANDING THE WORLD TO SOLVE SOCIAL DILEMMAS USING MULTI-AGENT REINFORCEMENT LEARNING - [Paper](https://arxiv.org/pdf/2305.11358.pdf)
-+ Learning to cooperate in multi-agent social dilemmas - [Paper](https://www.researchgate.net/publication/221456198_Learning_to_cooperate_in_multi-agent_social_dilemmas)
-+ Socially Intelligent Genetic Agents for the Emergence of Explicit Norms - [Paper](https://niravajmeri.github.io/docs/IJCAI22-SIGA.pdf)
-+ Too many cooks: Coordinating multi-agent collaboration through inverse planning - [Paper](https://dspace.mit.edu/bitstream/handle/1721.1/138369/0157.pdf?sequence=2&isAllowed=y)
-
-
-

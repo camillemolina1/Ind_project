@@ -1,6 +1,6 @@
 from model import Plant, TradingMarket
-import variables as v
-import agents as ag
+from Helpers import variables as v
+from Agents import agents as ag
 
 
 def list_contains(p, ls):
@@ -27,6 +27,13 @@ def check_if_valid_move(agent, move):
     if len(neighbours) == 0:
         return True
     return False
+
+
+def get_random_move(agent):
+    valid_moves = find_all_valid_moves(agent)
+    if len(valid_moves) == 0:
+        return agent.pos
+    return agent.random.choice(valid_moves)
 
 
 def is_agent_in_the_way(a):
@@ -148,12 +155,12 @@ def find_shortest_path_helper(agent, objs):
     moves_tried = []
     moves = find_all_valid_moves(agent)
     if len(moves) == 0:
-        print("no moves available")
+        # print("no moves available")
         return [agent.pos]
 
     random_move = agent.random.choice(moves)
     if len(objs) == 0:
-        print("no places to go")
+        # print("no places to go")
         return [agent.pos]
 
     for m in moves:
@@ -175,7 +182,7 @@ def find_shortest_path_helper(agent, objs):
             if lists_contain(neighborhood, objs):
                 return p
         paths = new_paths
-    print("can't find a path")
+    # print("can't find a path")
     return []
 
 

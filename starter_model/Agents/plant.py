@@ -1,5 +1,5 @@
 import mesa
-import variables as v
+from Helpers import variables as v
 
 
 class Plant(mesa.Agent):
@@ -10,9 +10,15 @@ class Plant(mesa.Agent):
         self.max_size = plant_params[0]
         self.growth_time = plant_params[1]
         self.time = 0
+        # self.age = 0
 
     def step(self):
         if self.growth_time > 0:
+            # if v.SOIL < self.size < v.SEEDS:
+                # if self.age > 5:
+                #     self.size = v.SOIL
+                # else:
+                #     self.age += 0.1
             if v.SOIL < self.size < self.max_size:
                 if self.time > self.growth_time:
                     self.size += 1
@@ -20,6 +26,7 @@ class Plant(mesa.Agent):
                 else:
                     self.time += 1
             elif self.size == v.SEEDS:
+                # self.age = 0
                 if self.time > self.growth_time:
                     self.size = v.BABY_PLANT
                     self.time = 0

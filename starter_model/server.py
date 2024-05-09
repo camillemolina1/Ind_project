@@ -1,6 +1,8 @@
 import mesa
 from mesa_viz_tornado.modules import ChartModule, BarChartModule
-import variables as v
+
+from Agents.market import Wall
+from Helpers import variables as v
 from model import MyModel, Plant, TradingMarket, TradingAgent
 
 MODEL_PARAMS = {
@@ -60,6 +62,8 @@ MODEL_PARAMS = {
 def agent_portrayal(agent):
     if isinstance(agent, TradingMarket):
         portrayal = {"Shape": v.MARKET_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
+    elif isinstance(agent, Wall):
+        portrayal = {"Shape": v.BARS_IMG, "Color": "yellow", "Filled": "true", "Layer": 0, "r": 0.2}
     elif isinstance(agent, TradingAgent):
         portrayal = {"Shape": "circle", "Color": "blue", "Filled": "true", "Layer": 1, "r": 0.5}
         if agent.svo == v.ALTRUISTIC:
@@ -128,14 +132,14 @@ agent_activity2 = BarChartModule(
     data_collector_name="agent_activity2"
 )
 
-hunger_level_chart = ChartModule(
+datacollector = ChartModule(
     [{"Label": "Agent 1", "Color": "#EC4521"}, {"Label": "Agent 2", "Color": "#21A2EC"},
      {"Label": "Agent 3", "Color": "#24D339"}, {"Label": "Agent 4", "Color": "#EDDE47"},
-     {"Label": "Agent 5", "Color": "#ED47E3"}], data_collector_name="hunger_levels"
+     {"Label": "Agent 5", "Color": "#ED47E3"}], data_collector_name="datacollector"
 )
 
 server = mesa.visualization.ModularServer(
-    MyModel, [grid, hunger_level_chart, agent_count_chart, food_count_chart,
+    MyModel, [grid, datacollector, agent_count_chart, food_count_chart,
               agent_activity, agent_activity2],
     "Hungry Agents Model", MODEL_PARAMS
 )

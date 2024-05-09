@@ -12,7 +12,7 @@
   - [Past Papers](#past-papers)
 
 ## Current version:  
-Agents need to eat to stay alive. Agents colors represent their social value orientation (selfish, altruistic, sadistic...) 
+Agents need to eat to stay alive. Agents colors represent their social value orientation (selfish, altruistic, sadistic...). Agents can however change their svo value to selfish if they are cooperative and believe the entire population is not going to cooperate or they are competitive and they believe no one is competing against them. Agents can now also send other agents to "prison"
 
   Agents can: 
   + move around the grid
@@ -23,18 +23,22 @@ Agents need to eat to stay alive. Agents colors represent their social value ori
   + give agents food
 
 ### Model:
-
-<img src="https://github.com/camillemolina1/Ind_project/assets/98462350/f5b7acfc-315a-4923-8bcf-a0a568db52c5" width=50% height=50%>
+  
+<img src="https://github.com/camillemolina1/Ind_project/assets/98462350/5c3f08ac-84d3-4a10-8f12-f4e47147845d" width=50% height=50%>
 
 ### Meanings:
 
   #### Agents:
+    
   <img src="https://github.com/camillemolina1/Ind_project/assets/98462350/700d48f1-b9f0-4017-8518-61bb318ff845" width=50% height=50%>
   
   #### Plants:
   + Plants now take time to grow  
   + they start off as seeds and get bigger with time (4 sizes possible)   
   + you can see how "big" the plant is by the number of leaves (1 leaf = 1 unit of food for agents)
+
+  #### Gate:
+  The gate is removable and serves as a "prison" for agents that are behaving in a way that only serves themselves. Agents can be sent there and brought back by altruistic, cooperative and selfish   agents if they think they have changed their svo and are ready to cooperate.
 
 ## Context
 
@@ -53,12 +57,14 @@ Social value orientation (SVO) is a measure that corresponds to a combination of
   
 ## Previous versions:  
 
+<img src="https://github.com/camillemolina1/Ind_project/assets/98462350/f5b7acfc-315a-4923-8bcf-a0a568db52c5" width=48% height=48%>
+
 #### Meanings:  
 Agents: (Red circle - hungry)  ------>  (Blue circle - fed)   
 Food: Green circle (the bigger the more food available)  
 Trading stations : Yellow Star  
 Soil : Brown squares
-  
+   
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/4e634060-9080-4fee-bf0c-759add0ac819)
 
 ![image](https://github.com/camillemolina1/Ind_project/assets/98462350/831166e6-39fc-4623-92e0-fe199575db98)
